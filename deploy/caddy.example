@@ -1,6 +1,21 @@
-strongpassword.site, www.strongpassword.site {
+www.strongpassword.site {
+	redir https://strongpassword.site{uri} 308
+}
+
+strongpassword.site {
 	root * /var/www/strongpassword
 	encode zstd gzip
+
+	handle /favicon.ico {
+		rewrite * /favicon.svg
+		file_server
+	}
+
+	handle /manifest.webmanifest {
+		header Content-Type "application/manifest+json; charset=utf-8"
+		file_server
+	}
+
 	file_server
 
 	header {

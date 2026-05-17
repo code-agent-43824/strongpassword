@@ -1,0 +1,18 @@
+{
+  "name": "StrongPassword",
+  "short_name": "StrongPassword",
+  "description": "Private client-side strong password generator.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f6f8fb",
+  "theme_color": "#0b6b58",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
