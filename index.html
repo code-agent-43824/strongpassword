@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Приватный генератор сложных паролей, работающий локально в браузере.">
+    <title>StrongPassword</title>
+    <link rel="stylesheet" href="styles.css">
+    <script type="module" src="app.js"></script>
+  </head>
+  <body>
+    <main class="shell" data-app>
+      <section class="generator" aria-labelledby="title">
+        <header class="topbar">
+          <a class="brand" href="/" aria-label="StrongPassword">
+            <span class="brand-mark" aria-hidden="true">SP</span>
+            <span data-i18n="product">StrongPassword</span>
+          </a>
+          <select class="language" data-lang aria-label="Language">
+            <option value="ru">RU</option>
+            <option value="en">EN</option>
+          </select>
+        </header>
+
+        <div class="intro">
+          <p class="eyebrow" data-i18n="local">Всё происходит на этом устройстве</p>
+          <h1 id="title" data-i18n="title">Генератор сложных паролей</h1>
+          <p data-i18n="subtitle">Создаёт пароли локально в браузере. Без сервера, логов и аналитики.</p>
+        </div>
+
+        <div class="password-panel">
+          <label class="sr-only" for="password-output">Пароль</label>
+          <input id="password-output" class="password-output" data-password readonly spellcheck="false" autocomplete="off">
+          <div class="password-actions">
+            <button class="icon-button" type="button" data-visibility>Скрыть</button>
+            <button class="primary-button" type="button" data-copy>Копировать</button>
+          </div>
+          <p class="countdown" data-countdown aria-live="polite"></p>
+        </div>
+
+        <div class="metrics" aria-label="Password quality">
+          <div>
+            <span data-i18n="entropy">Энтропия</span>
+            <strong><span data-entropy>0</span> bit</strong>
+          </div>
+          <div>
+            <span data-i18n="strength">Стойкость</span>
+            <strong data-strength>-</strong>
+          </div>
+          <div>
+            <span data-i18n="crack">Оценка перебора</span>
+            <strong data-crack>-</strong>
+          </div>
+        </div>
+
+        <form class="controls" aria-label="Password settings">
+          <label class="field">
+            <span data-i18n="preset">Профиль</span>
+            <select data-preset>
+              <option value="everyday">Обычный аккаунт</option>
+              <option value="finance">Банк и финансы</option>
+              <option value="server">Серверы и админки</option>
+              <option value="recovery">Резервный код</option>
+            </select>
+          </label>
+
+          <label class="field length-field">
+            <span><span data-i18n="length">Длина</span>: <strong data-length-value>16</strong></span>
+            <input type="range" min="8" max="64" step="1" value="16" data-length>
+          </label>
+
+          <div class="checks">
+            <label><input type="checkbox" data-option="lower" checked> <span data-i18n="lower">a-z</span></label>
+            <label><input type="checkbox" data-option="upper" checked> <span data-i18n="upper">A-Z</span></label>
+            <label><input type="checkbox" data-option="digits" checked> <span data-i18n="digits">2-9</span></label>
+            <label><input type="checkbox" data-option="symbols" checked> <span data-i18n="symbols">Символы</span></label>
+            <label class="wide"><input type="checkbox" data-option="avoidAmbiguous" checked> <span data-i18n="avoidAmbiguous">Без похожих символов</span></label>
+          </div>
+
+          <button class="primary-button generate" type="button" data-generate data-i18n="generate">Сгенерировать</button>
+        </form>
+      </section>
+
+      <footer class="footer">
+        <a href="privacy.html" data-i18n="privacy">Приватность</a>
+        <a href="https://github.com/code-agent-43824/strongpassword" data-i18n="source" rel="noreferrer">GitHub</a>
+      </footer>
+    </main>
+  </body>
+</html>
