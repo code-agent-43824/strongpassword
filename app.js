@@ -8,7 +8,7 @@ import {
 } from "./src/password-core.js";
 
 const state = {
-  lang: localStorage.getItem("strongpassword.lang") || "ru",
+  lang: initialLanguage(),
   preset: "everyday",
   password: "",
   copied: false,
@@ -44,6 +44,7 @@ const dictionary = {
     crack: "Оценка перебора",
     local: "Всё происходит на этом устройстве",
     privacy: "Приватность",
+    security: "Безопасность",
     source: "GitHub",
     empty: "Нажмите «Сгенерировать»",
     visible: "Скроется через",
@@ -88,6 +89,7 @@ const dictionary = {
     crack: "Crack estimate",
     local: "Everything happens on this device",
     privacy: "Privacy",
+    security: "Security",
     source: "GitHub",
     empty: "Press Generate",
     visible: "Hidden in",
@@ -198,8 +200,12 @@ function applyPreset(event) {
 }
 
 function setLanguage(event) {
+  const target = event.target.value === "en" ? "/en/" : "/ru/";
+  if (window.location.pathname !== target) {
+    window.location.assign(target);
+    return;
+  }
   state.lang = event.target.value;
-  localStorage.setItem("strongpassword.lang", state.lang);
   render();
 }
 
@@ -256,4 +262,10 @@ function passwordSize(password) {
   if (password.length > 36) return "sm";
   if (password.length > 24) return "md";
   return "lg";
+}
+
+function initialLanguage() {
+  const lang = document.documentElement.lang;
+  if (lang === "en" || window.location.pathname.startsWith("/en/")) return "en";
+  return "ru";
 }

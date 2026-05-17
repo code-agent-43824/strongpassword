@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Безопасность и устройство проекта | StrongPassword</title>
+    <meta name="description" content="Как устроен StrongPassword: генерация полностью в браузере, Web Crypto API, без Math.random(), backend, аналитики и трекеров.">
+    <link rel="canonical" href="https://strongpassword.site/security/">
+    <link rel="alternate" hreflang="ru" href="https://strongpassword.site/security/">
+    <link rel="alternate" hreflang="x-default" href="https://strongpassword.site/security/">
+    <meta property="og:title" content="Безопасность и устройство проекта | StrongPassword">
+    <meta property="og:description" content="StrongPassword работает полностью в браузере: без backend, логов, аналитики, трекеров и отправки паролей на сервер.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://strongpassword.site/security/">
+    <meta name="twitter:card" content="summary">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="generator privacy-page">
+        <header class="topbar">
+          <a class="brand" href="/">
+            <span class="brand-mark" aria-hidden="true">SP</span>
+            <span>StrongPassword</span>
+          </a>
+        </header>
+        <div class="intro">
+          <p class="eyebrow">Security</p>
+          <h1>Пароль остаётся в браузере</h1>
+          <p>StrongPassword — статический сайт без backend. Генерация выполняется на вашем устройстве через Web Crypto API, поэтому пароль не отправляется на сервер и не может попасть в серверные логи.</p>
+        </div>
+        <div class="security-list">
+          <section>
+            <h2>Генерация</h2>
+            <p>Для случайности используется <code>crypto.getRandomValues()</code>. <code>Math.random()</code> не используется, потому что он не предназначен для криптографических секретов.</p>
+          </section>
+          <section>
+            <h2>Серверная часть</h2>
+            <p>Backend отсутствует. Сервер отдаёт только HTML, CSS и JavaScript; пароль создаётся после загрузки страницы уже внутри браузера.</p>
+          </section>
+          <section>
+            <h2>Наблюдение</h2>
+            <p>На сайте нет Google Analytics, Яндекс.Метрики, пикселей, трекеров и сторонних аналитических скриптов.</p>
+          </section>
+          <section>
+            <h2>Код</h2>
+            <p>Код открыт на <a href="https://github.com/code-agent-43824/strongpassword" rel="noreferrer">GitHub</a>. Основная логика генерации находится в модуле <code>src/password-core.js</code>.</p>
+          </section>
+        </div>
+      </section>
+      <footer class="footer">
+        <a href="/">Генератор</a>
+        <a href="/privacy.html">Приватность</a>
+        <a href="https://github.com/code-agent-43824/strongpassword" rel="noreferrer">GitHub</a>
+      </footer>
+    </main>
+  </body>
+</html>
+

@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://strongpassword.site/sitemap.xml
+

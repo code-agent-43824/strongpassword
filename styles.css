@@ -271,6 +271,7 @@ button:hover {
 .footer {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 18px;
   color: var(--muted);
   font-size: 0.92rem;
@@ -278,6 +279,52 @@ button:hover {
 
 .privacy-page {
   display: block;
+}
+
+.seo-block {
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--panel) 94%, transparent);
+}
+
+.seo-block h2,
+.security-list h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  line-height: 1.25;
+}
+
+.seo-grid,
+.security-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.seo-grid article,
+.security-list section {
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.seo-grid h3 {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.seo-grid p,
+.security-list p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+code {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.94em;
 }
 
 .sr-only {
@@ -335,7 +382,9 @@ button:hover {
 
   .metrics,
   .controls,
-  .checks {
+  .checks,
+  .seo-grid,
+  .security-list {
     grid-template-columns: 1fr;
   }
 

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Strong Password Generator — Private, Local, Browser-Based | StrongPassword</title>
+    <meta name="description" content="Free strong password generator. Runs locally in your browser using the Web Crypto API: no server, no logs, no analytics, no password transmission.">
+    <link rel="canonical" href="https://strongpassword.site/en/">
+    <link rel="alternate" hreflang="ru" href="https://strongpassword.site/ru/">
+    <link rel="alternate" hreflang="en" href="https://strongpassword.site/en/">
+    <link rel="alternate" hreflang="x-default" href="https://strongpassword.site/">
+    <meta property="og:title" content="Strong Password Generator — Private, Local, Browser-Based | StrongPassword">
+    <meta property="og:description" content="Free strong password generator. Runs locally in your browser using the Web Crypto API: no server, no logs, no analytics, no password transmission.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://strongpassword.site/en/">
+    <meta name="twitter:card" content="summary">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/styles.css">
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "StrongPassword",
+        "applicationCategory": "SecurityApplication",
+        "operatingSystem": "Web",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "url": "https://strongpassword.site/en/",
+        "description": "Free strong password generator. Runs locally in your browser using the Web Crypto API: no server, no logs, no analytics, no password transmission.",
+        "inLanguage": "en"
+      }
+    </script>
+    <script type="module" src="/app.js"></script>
+  </head>
+  <body>
+    <main class="shell" data-app>
+      <section class="generator" aria-labelledby="title">
+        <header class="topbar">
+          <a class="brand" href="/" aria-label="StrongPassword">
+            <span class="brand-mark" aria-hidden="true">SP</span>
+            <span data-i18n="product">StrongPassword</span>
+          </a>
+          <select class="language" data-lang aria-label="Language">
+            <option value="ru">RU</option>
+            <option value="en">EN</option>
+          </select>
+        </header>
+
+        <div class="intro">
+          <p class="eyebrow" data-i18n="local">Everything happens on this device</p>
+          <h1 id="title" data-i18n="title">Strong password generator</h1>
+          <p data-i18n="subtitle">Creates passwords locally in your browser. No backend, logs or analytics.</p>
+        </div>
+
+        <div class="password-panel">
+          <label class="sr-only" for="password-output">Password</label>
+          <input id="password-output" class="password-output" type="text" data-password readonly spellcheck="false" autocomplete="off">
+          <div class="password-actions">
+            <button class="icon-button" type="button" data-visibility>Hide</button>
+            <button class="primary-button" type="button" data-copy>Copy</button>
+          </div>
+          <p class="countdown" data-countdown aria-live="polite"></p>
+        </div>
+
+        <section class="metrics" aria-label="Password quality">
+          <div>
+            <span data-i18n="entropy">Entropy</span>
+            <strong><span data-entropy>0</span> bit</strong>
+          </div>
+          <div>
+            <span data-i18n="strength">Strength</span>
+            <strong data-strength>-</strong>
+          </div>
+          <div>
+            <span data-i18n="crack">Crack estimate</span>
+            <strong data-crack>-</strong>
+          </div>
+        </section>
+
+        <div class="controls" role="group" aria-label="Password settings">
+          <label class="field">
+            <span data-i18n="preset">Profile</span>
+            <select data-preset>
+              <option value="everyday">Everyday account</option>
+              <option value="finance">Banking and finance</option>
+              <option value="server">Servers and admin panels</option>
+              <option value="recovery">Recovery code</option>
+            </select>
+          </label>
+
+          <label class="field length-field">
+            <span><span data-i18n="length">Length</span>: <strong data-length-value>16</strong></span>
+            <input type="range" min="8" max="64" step="1" value="16" data-length>
+          </label>
+
+          <div class="checks">
+            <label><input type="checkbox" data-option="lower" checked> <span data-i18n="lower">a-z</span></label>
+            <label><input type="checkbox" data-option="upper" checked> <span data-i18n="upper">A-Z</span></label>
+            <label><input type="checkbox" data-option="digits" checked> <span data-i18n="digits">2-9</span></label>
+            <label><input type="checkbox" data-option="symbols" checked> <span data-i18n="symbols">Symbols</span></label>
+            <label class="wide"><input type="checkbox" data-option="avoidAmbiguous" checked> <span data-i18n="avoidAmbiguous">Avoid look-alikes</span></label>
+          </div>
+
+          <button class="primary-button generate" type="button" data-generate data-i18n="generate">Generate</button>
+        </div>
+      </section>
+
+      <section class="seo-block" aria-labelledby="seo-title">
+        <h2 id="seo-title">About the password generator</h2>
+        <div class="seo-grid">
+          <article>
+            <h3>How the generator works</h3>
+            <p>Choose a length and character sets. The browser creates random bytes with the Web Crypto API and builds the password on your device.</p>
+          </article>
+          <article>
+            <h3>Why the password is generated locally</h3>
+            <p>Local generation removes unnecessary risk: the password does not travel over the network, reach server logs, or pass through backend code.</p>
+          </article>
+          <article>
+            <h3>What password length is safe</h3>
+            <p>For everyday accounts, 16 characters is a reasonable minimum. For finance, admin panels, and critical services, use 20-32 characters and a password manager.</p>
+          </article>
+          <article>
+            <h3>Why exclude look-alike characters</h3>
+            <p>This option removes characters such as O, 0, I, and l. It reduces mistakes when a password must be dictated, retyped, or stored manually.</p>
+          </article>
+          <article>
+            <h3>Why use different password types</h3>
+            <p>Different services have different restrictions. Profiles help choose length and characters for an everyday account, banking, servers, or recovery codes.</p>
+          </article>
+          <article>
+            <h3>Why not send a password to a server</h3>
+            <p>Server-side generation creates another point of trust. A password is safer when the secret appears only in the browser and stays with you.</p>
+          </article>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <a href="/privacy.html" data-i18n="privacy">Privacy</a>
+        <a href="/security/" data-i18n="security">Security</a>
+        <a href="https://github.com/code-agent-43824/strongpassword" data-i18n="source" rel="noreferrer">GitHub</a>
+      </footer>
+    </main>
+  </body>
+</html>
+
