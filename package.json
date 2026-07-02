@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "start": "npx http-server . -p 3002 -c-1",
+    "start:mcp": "node mcp-server.js",
     "test": "node --test",
-    "check": "node --check app.js && node --check src/password-core.js"
+    "check": "node --check app.js && node --check src/password-core.js && node --check mcp-server.js"
   },
   "keywords": ["password", "generator", "security", "privacy"],
   "author": "code-agent-43824",

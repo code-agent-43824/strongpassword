@@ -1,0 +1,13 @@
+{
+  "name": "StrongPassword Read-only MCP",
+  "description": "Public read-only MCP endpoint for StrongPassword site information. It does not generate, store, log, or transmit passwords.",
+  "endpoint": "https://strongpassword.site/mcp",
+  "transport": "streamable-http",
+  "protocolVersion": "2025-11-25",
+  "capabilities": {
+    "resources": true,
+    "prompts": true,
+    "tools": false
+  },
+  "privacy": "Passwords are generated locally in the browser and are not exposed through MCP."
+}

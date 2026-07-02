@@ -16,6 +16,10 @@ strongpassword.site {
 		file_server
 	}
 
+	handle /mcp {
+		reverse_proxy 127.0.0.1:3003
+	}
+
 	file_server
 
 	header {
