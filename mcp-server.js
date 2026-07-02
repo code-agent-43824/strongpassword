@@ -190,6 +190,16 @@ export function createServer() {
       return;
     }
 
+    if (request.url === "/mcp/health") {
+      sendJson(response, 200, {
+        ok: true,
+        name: "strongpassword-readonly",
+        protocolVersion: PROTOCOL_VERSION,
+        readOnly: true
+      });
+      return;
+    }
+
     if (request.url !== "/mcp") {
       sendJson(response, 404, { error: "Not found" });
       return;

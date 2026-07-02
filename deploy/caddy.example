@@ -16,11 +16,36 @@ strongpassword.site {
 		file_server
 	}
 
-	handle /mcp {
+	@markdownHome {
+		path /
+		header Accept *text/markdown*
+	}
+	handle @markdownHome {
+		header Content-Type "text/markdown; charset=utf-8"
+		header Vary "Accept"
+		header x-markdown-tokens "176"
+		rewrite * /index.md
+		file_server
+	}
+
+	handle /.well-known/api-catalog {
+		header Content-Type "application/linkset+json; charset=utf-8"
+		file_server
+	}
+
+	handle /.well-known/openapi.json {
+		header Content-Type "application/openapi+json; charset=utf-8"
+		file_server
+	}
+
+	handle /mcp* {
 		reverse_proxy 127.0.0.1:3003
 	}
 
 	file_server
+
+	@homepage path /
+	header @homepage Link "</.well-known/api-catalog>; rel=\"api-catalog\"; type=\"application/linkset+json\", </.well-known/openapi.json>; rel=\"service-desc\"; type=\"application/openapi+json\", </.well-known/mcp/server-card.json>; rel=\"service-doc\"; type=\"application/json\", </.well-known/agent-skills/index.json>; rel=\"describedby\"; type=\"application/json\", </index.md>; rel=\"alternate\"; type=\"text/markdown\""
 
 	header {
 		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"

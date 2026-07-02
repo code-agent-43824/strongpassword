@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
+  "skills": [
+    {
+      "name": "strongpassword-agent-readiness",
+      "type": "skill-md",
+      "description": "Understand StrongPassword's public capabilities, privacy posture, and safe-password guidance.",
+      "url": "https://strongpassword.site/.well-known/agent-skills/strongpassword-agent-readiness/SKILL.md",
+      "digest": "sha256:089a27802a145459803034ff44eb5ec3c32be542c27909a93eb5620e35b53f42"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://strongpassword.site/mcp",
+      "service-desc": [
+        {
+          "href": "https://strongpassword.site/.well-known/openapi.json",
+          "type": "application/openapi+json",
+          "title": "StrongPassword MCP HTTP description"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://strongpassword.site/.well-known/mcp/server-card.json",
+          "type": "application/json",
+          "title": "StrongPassword MCP Server Card"
+        }
+      ],
+      "status": [
+        {
+          "href": "https://strongpassword.site/mcp/health",
+          "type": "application/json",
+          "title": "StrongPassword MCP health"
+        }
+      ]
+    }
+  ]
+}

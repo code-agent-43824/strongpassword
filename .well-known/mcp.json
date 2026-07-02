@@ -1,5 +1,9 @@
 {
   "name": "StrongPassword Read-only MCP",
+  "serverInfo": {
+    "name": "strongpassword-readonly",
+    "version": "1.1.0"
+  },
   "description": "Public read-only MCP endpoint for StrongPassword site information. It does not generate, store, log, or transmit passwords.",
   "endpoint": "https://strongpassword.site/mcp",
   "transport": "streamable-http",

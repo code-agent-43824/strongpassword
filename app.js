@@ -142,6 +142,7 @@ for (const option of elements.options) {
 
 render();
 createPassword();
+registerWebMcpTools();
 
 function createPassword() {
   try {
@@ -268,4 +269,65 @@ function initialLanguage() {
   const lang = document.documentElement.lang;
   if (lang === "en" || window.location.pathname.startsWith("/en/")) return "en";
   return "ru";
+}
+
+function registerWebMcpTools() {
+  const modelContext = navigator.modelContext;
+  if (!modelContext?.registerTool) return;
+
+  const controller = new AbortController();
+  const tools = [
+    {
+      name: "strongpassword.get_safe_password_faq",
+      description: "Return safe-password guidance without generating or receiving a password.",
+      inputSchema: {
+        type: "object",
+        additionalProperties: false,
+        properties: {}
+      },
+      execute: async () => ({
+        guidance: [
+          "Use a unique random password for every important service.",
+          "Use at least 16 random characters for everyday accounts; use longer secrets for finance, infrastructure, email, and recovery codes.",
+          "Do not reuse passwords across services.",
+          "Store passwords in a reputable password manager.",
+          "Enable multi-factor authentication on important accounts.",
+          "Do not paste real passwords, seed phrases, recovery codes, or private password ideas into AI chats, MCP tools, logs, or support forms.",
+          "StrongPassword generates passwords locally in the browser so the secret does not leave the device."
+        ]
+      })
+    },
+    {
+      name: "strongpassword.recommend_settings",
+      description: "Recommend StrongPassword generator settings for a use case without returning a password.",
+      inputSchema: {
+        type: "object",
+        additionalProperties: false,
+        properties: {
+          useCase: {
+            type: "string",
+            enum: ["everyday", "finance", "server", "recovery"]
+          }
+        }
+      },
+      execute: async ({ useCase = "everyday" } = {}) => {
+        const preset = PRESETS[useCase] ? useCase : "everyday";
+        return {
+          preset,
+          settings: normalizeOptions({ preset, ...PRESETS[preset] }),
+          privacy: "This tool returns settings only. It does not generate, inspect, store, or transmit a password."
+        };
+      }
+    }
+  ];
+
+  for (const tool of tools) {
+    try {
+      modelContext.registerTool(tool, { signal: controller.signal });
+    } catch {
+      return;
+    }
+  }
+
+  window.addEventListener("pagehide", () => controller.abort(), { once: true });
 }
