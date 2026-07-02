@@ -28,6 +28,7 @@ test("lists public resources only", () => {
 
   const uris = response.result.resources.map((resource) => resource.uri);
   assert.ok(uris.includes("site://strongpassword/privacy"));
+  assert.ok(uris.includes("site://strongpassword/faq"));
   assert.ok(uris.includes("site://strongpassword/mcp"));
 });
 
@@ -42,6 +43,20 @@ test("reads the privacy resource without exposing passwords", () => {
   assert.equal(response.result.contents[0].mimeType, "text/markdown");
   assert.match(response.result.contents[0].text, /not sent to a StrongPassword backend/);
   assert.doesNotMatch(response.result.contents[0].text, /generated password:/i);
+});
+
+test("reads safe-password FAQ answers", () => {
+  const response = handleJsonRpc({
+    jsonrpc: "2.0",
+    id: 6,
+    method: "resources/read",
+    params: { uri: "site://strongpassword/faq" }
+  });
+
+  const text = response.result.contents[0].text;
+  assert.match(text, /How do I make a safe password/);
+  assert.match(text, /Use a unique random password/);
+  assert.match(text, /Do not send real passwords/);
 });
 
 test("returns no callable tools", () => {

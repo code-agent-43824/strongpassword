@@ -56,6 +56,47 @@ The UI lets the user choose password length, character groups, and whether to av
 `
   },
   {
+    uri: "site://strongpassword/faq",
+    name: "faq",
+    title: "Safe password FAQ",
+    description: "Read-only answers to common safe-password questions.",
+    mimeType: "text/markdown",
+    text: `# Safe password FAQ
+
+## How do I make a safe password?
+
+Use a unique random password for every important service. For ordinary accounts, 16 or more random characters is a practical minimum. For banking, infrastructure, email, password-manager master passwords, and recovery codes, prefer longer passwords or passphrases and stronger account protection.
+
+## Should I reuse a strong password?
+
+No. Reusing a password means one leaked service can compromise the others. Use a password manager to keep every account unique.
+
+## Is a memorable phrase safe?
+
+It can be safe only when it is long enough and not obvious. A private phrase should be transformed into a high-entropy passphrase instead of using a direct quote, name, date, goal, or common sentence. Avoid anything that someone could guess from public information.
+
+## What length should I choose?
+
+StrongPassword's baseline is 16 characters for everyday accounts, 22 for finance, 28 for servers and admin panels, and 32 for recovery-code style secrets. Longer is usually better when the service accepts it.
+
+## Do symbols make a password safe by themselves?
+
+No. Symbols help only as part of a large search space. Length, randomness, uniqueness, and avoiding predictable substitutions matter more than adding a single punctuation mark.
+
+## Why generate in the browser?
+
+Local generation keeps the secret on the user's device. A password that never leaves the browser is not exposed to server logs, backend bugs, analytics, or a network request to a generator service.
+
+## Should I paste a real password into an AI chat or MCP tool?
+
+No. Do not send real passwords, recovery codes, seed phrases, or private personal password ideas into AI chats, MCP tools, logs, or support forms. Generate secrets locally and store them in a password manager.
+
+## What else should I enable?
+
+Use multi-factor authentication for important accounts, keep recovery options current, and prefer a reputable password manager. A strong password is one layer, not the whole security system.
+`
+  },
+  {
     uri: "site://strongpassword/mcp",
     name: "mcp",
     title: "MCP read-only contract",
@@ -74,7 +115,7 @@ const prompts = [
   {
     name: "explain-safe-password-choice",
     title: "Explain Safe Password Choice",
-    description: "Explain how to choose a safe password without asking the MCP server to generate one.",
+    description: "Explain safe password choices using the read-only FAQ without asking the MCP server to generate one.",
     arguments: []
   },
   {
@@ -221,7 +262,7 @@ function getPrompt(id, params = {}) {
   }
 
   const text = prompt.name === "explain-safe-password-choice"
-    ? "Explain how to choose unique, high-entropy passwords while preserving the StrongPassword privacy model. Do not ask the MCP server to generate or receive a password."
+    ? "Use the site://strongpassword/faq resource to answer safe-password questions. Emphasize unique random passwords, enough length, password managers, MFA, and local generation. Do not ask the MCP server to generate, receive, inspect, store, or log a real password."
     : "Summarize StrongPassword's public purpose, local-only password generation, and read-only MCP endpoint.";
 
   return jsonRpcResult(id, {
