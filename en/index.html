@@ -91,32 +91,37 @@
             </select>
           </label>
 
-          <label class="field" data-random-setting>
-            <span data-i18n="preset">Profile</span>
+          <label class="field">
+            <span data-i18n="preset">Purpose</span>
             <select data-preset>
-              <option value="everyday">Everyday account</option>
+              <option value="disposable">One-time service</option>
+              <option value="social" selected>Social networks</option>
+              <option value="government">Government services</option>
               <option value="finance">Banking and finance</option>
+              <option value="ai">AI services</option>
+              <option value="primary">Primary email / manager</option>
               <option value="server">Servers and admin panels</option>
               <option value="recovery">Recovery code</option>
             </select>
           </label>
 
           <label class="field length-field" data-random-setting>
-            <span><span data-i18n="length">Length</span>: <strong data-length-value>16</strong></span>
-            <input type="range" min="8" max="64" step="1" value="16" data-length>
+            <span><span data-i18n="length">Length</span>: <strong data-length-value>11</strong></span>
+            <input type="range" min="8" max="64" step="1" value="11" data-length>
           </label>
 
           <label class="field goal-field" data-goal-field hidden>
             <span data-i18n="goalLabel">What do you want to remember or change?</span>
             <input type="text" maxlength="80" autocomplete="off" spellcheck="false" data-goal>
-            <span class="goal-hint" data-i18n="goalHint">The text stays in your browser. Security comes from a separate random 16-character anchor; the predictable part is not counted as entropy.</span>
+            <span class="goal-hint" data-i18n="goalHint">The estimate counts characters and excludes dictionary or goal-aware guessing. The text stays only in your browser.</span>
+            <span class="goal-feedback" data-goal-feedback aria-live="polite"></span>
           </label>
 
           <div class="checks" data-random-setting>
             <label><input type="checkbox" data-option="lower" checked> <span data-i18n="lower">a-z</span></label>
             <label><input type="checkbox" data-option="upper" checked> <span data-i18n="upper">A-Z</span></label>
             <label><input type="checkbox" data-option="digits" checked> <span data-i18n="digits">2-9</span></label>
-            <label><input type="checkbox" data-option="symbols" checked> <span data-i18n="symbols">Symbols</span></label>
+            <label><input type="checkbox" data-option="symbols"> <span data-i18n="symbols">Symbols</span></label>
             <label class="wide"><input type="checkbox" data-option="avoidAmbiguous" checked> <span data-i18n="avoidAmbiguous">Avoid look-alikes</span></label>
           </div>
 
@@ -136,8 +141,8 @@
             <p>Local generation removes unnecessary risk: the password does not travel over the network, reach server logs, or pass through backend code.</p>
           </article>
           <article>
-            <h3>What password length is safe</h3>
-            <p>For everyday accounts, 16 characters is a reasonable minimum. For finance, admin panels, and critical services, use 20-32 characters and a password manager.</p>
+            <h3>How the complexity level is selected</h3>
+            <p>The purpose sets a clear full-search target: a few years for a one-time service, decades for social and AI accounts, and 100+ years for critical accounts.</p>
           </article>
           <article>
             <h3>Why exclude look-alike characters</h3>
@@ -145,7 +150,7 @@
           </article>
           <article>
             <h3>Why use different password types</h3>
-            <p>Different services have different restrictions. Profiles help choose length and characters for an everyday account, banking, servers, or recovery codes.</p>
+            <p>Accounts have different value. Profiles cover one-time services, social networks, government, banking, AI, primary email, servers, and recovery codes.</p>
           </article>
           <article>
             <h3>Why not send a password to a server</h3>

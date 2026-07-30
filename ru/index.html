@@ -91,32 +91,37 @@
             </select>
           </label>
 
-          <label class="field" data-random-setting>
-            <span data-i18n="preset">Профиль</span>
+          <label class="field">
+            <span data-i18n="preset">Назначение</span>
             <select data-preset>
-              <option value="everyday">Обычный аккаунт</option>
+              <option value="disposable">Одноразовый сервис</option>
+              <option value="social" selected>Соцсети</option>
+              <option value="government">Госуслуги</option>
               <option value="finance">Банк и финансы</option>
+              <option value="ai">AI-сервисы</option>
+              <option value="primary">Основная почта / менеджер</option>
               <option value="server">Серверы и админки</option>
               <option value="recovery">Резервный код</option>
             </select>
           </label>
 
           <label class="field length-field" data-random-setting>
-            <span><span data-i18n="length">Длина</span>: <strong data-length-value>16</strong></span>
-            <input type="range" min="8" max="64" step="1" value="16" data-length>
+            <span><span data-i18n="length">Длина</span>: <strong data-length-value>11</strong></span>
+            <input type="range" min="8" max="64" step="1" value="11" data-length>
           </label>
 
           <label class="field goal-field" data-goal-field hidden>
             <span data-i18n="goalLabel">Что вы хотите помнить или изменить?</span>
             <input type="text" maxlength="80" autocomplete="off" spellcheck="false" data-goal>
-            <span class="goal-hint" data-i18n="goalHint">Текст остаётся в браузере. Безопасность даёт отдельный случайный 16-символьный якорь; предсказуемая часть не считается энтропией.</span>
+            <span class="goal-hint" data-i18n="goalHint">Оценка считается побуквенно и не учитывает словарный или целевой подбор. Текст остаётся только в браузере.</span>
+            <span class="goal-feedback" data-goal-feedback aria-live="polite"></span>
           </label>
 
           <div class="checks" data-random-setting>
             <label><input type="checkbox" data-option="lower" checked> <span data-i18n="lower">a-z</span></label>
             <label><input type="checkbox" data-option="upper" checked> <span data-i18n="upper">A-Z</span></label>
             <label><input type="checkbox" data-option="digits" checked> <span data-i18n="digits">2-9</span></label>
-            <label><input type="checkbox" data-option="symbols" checked> <span data-i18n="symbols">Символы</span></label>
+            <label><input type="checkbox" data-option="symbols"> <span data-i18n="symbols">Символы</span></label>
             <label class="wide"><input type="checkbox" data-option="avoidAmbiguous" checked> <span data-i18n="avoidAmbiguous">Без похожих символов</span></label>
           </div>
 
@@ -136,8 +141,8 @@
             <p>Локальная генерация убирает лишний риск: пароль не уходит по сети, не попадает в серверные журналы и не обрабатывается backend-кодом.</p>
           </article>
           <article>
-            <h3>Какая длина пароля считается безопасной</h3>
-            <p>Для обычных аккаунтов разумный минимум — 16 символов. Для финансов, админок и ключевых сервисов лучше использовать 20–32 символа и менеджер паролей.</p>
+            <h3>Как выбирается уровень сложности</h3>
+            <p>Назначение задаёт понятный ориентир полного перебора: несколько лет для одноразового сервиса, десятки лет для соцсетей и AI, 100+ лет для критичных аккаунтов.</p>
           </article>
           <article>
             <h3>Зачем исключать похожие символы</h3>
@@ -145,7 +150,7 @@
           </article>
           <article>
             <h3>Для чего использовать разные типы паролей</h3>
-            <p>У разных сервисов разные ограничения. Профили помогают быстро выбрать длину и символы для обычного аккаунта, банка, сервера или резервного кода.</p>
+            <p>У разных сервисов разная ценность аккаунта. Профили отдельно учитывают одноразовые сервисы, соцсети, госуслуги, банк, AI, основную почту, серверы и резервные коды.</p>
           </article>
           <article>
             <h3>Почему не стоит отправлять пароль на сервер</h3>

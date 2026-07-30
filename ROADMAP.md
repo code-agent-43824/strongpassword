@@ -4,20 +4,20 @@ StrongPassword remains privacy-first: passwords, personal goals, and generator
 inputs must stay on the user's device. No analytics, password backend, or
 agent-facing secret generation is planned.
 
-## 1. Goal-password mode
+## 1. Goal-password mode — completed
 
 Add goal passwords as one optional generator mode, not as a replacement for
 fully random passwords.
 
 - Accept a short personal intention locally in the browser.
 - Convert it to a compatible readable stem.
-- Add an independent cryptographically random anchor.
-- Count only the random anchor in the entropy estimate.
-- Warn that the goal itself may be predictable and that every service needs a
-  unique password.
+- Estimate letters character by character under an explicit full-search model.
+- State that this estimate excludes dictionary and goal-aware guessing.
+- If the phrase misses the selected target, recommend adding letters and append
+  a separate random group of digits followed by symbols.
 - Keep MCP and WebMCP from accepting goals or returning passwords.
 
-## 2. Purpose-based profiles
+## 2. Purpose-based profiles — completed
 
 Replace broad technical presets with clear service-purpose profiles. Each
 profile should explain why its defaults were selected.
@@ -31,13 +31,17 @@ profile should explain why its defaults were selected.
 - Server or administrator access.
 - Recovery code.
 
-The purpose selects a safe default length and character policy; advanced users
-can still customize compatible settings. A "one-time" account must not imply
-that weak or reused passwords are safe.
+The purpose selects a default length and full-search target: roughly two years
+for one-time services, 10 years for social and AI services, and at least 100
+years for critical profiles. Estimates assume an offline rate of 10 billion
+guesses per second and average discovery halfway through the search space.
+Advanced users can still customize compatible settings. A "one-time" account
+must not imply that reused passwords are safe.
 
 ## 3. Security and usability review
 
-- Test random output invariants and goal-anchor entropy.
+- Test random output invariants, conditional letter estimates, suffix grouping,
+  and profile targets.
 - Verify that goals and passwords never enter requests, logs, storage, URLs, or
   agent APIs.
 - Review keyboard, screen-reader, mobile, and copy/hide behavior.
@@ -47,8 +51,8 @@ that weak or reused passwords are safe.
 
 - Publish RU/EN guidance for memorable passphrases, unique passwords, MFA, and
   password managers.
-- Position the goal mode as personal meaning plus independent randomness, never
-  as security derived from a predictable life goal.
+- Position the goal mode as personal meaning plus a clearly conditional
+  character-search estimate, with random suffix assistance when needed.
 
 ## 5. Maintenance
 

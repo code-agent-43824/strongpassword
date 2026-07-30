@@ -6,26 +6,32 @@ StrongPassword is a private, client-side strong password generator.
 
 - Generates passwords entirely in the browser.
 - Uses the Web Crypto API through `crypto.getRandomValues()`, not `Math.random()`.
-- Supports presets for everyday accounts, finance, infrastructure, and recovery-code style secrets.
-- Offers an optional goal-password mode that combines a readable personal
-  intention with an independent random 16-character anchor.
+- Supports purpose profiles for one-time, social, government, banking, AI,
+  primary-email/password-manager, infrastructure, and recovery scenarios.
+- Offers an optional goal-password mode that counts the readable phrase
+  character by character and adds grouped random digits and symbols only when
+  the selected profile needs them.
 - Shows entropy, strength, and brute-force estimates locally.
 - Avoids analytics, tracking, backend password handling, and server-side password generation.
 
-## Recommended settings
+## Purpose targets
 
-- Everyday accounts: at least 16 random characters.
-- Banking and finance: around 22 random characters.
-- Servers and admin panels: around 28 random characters.
-- Recovery-code style secrets: around 32 random characters.
+- One-time service: roughly 2 years of average full search.
+- Social networks and AI services: roughly 10 years.
+- Government, banking, primary email/password manager, infrastructure, and
+  recovery profiles: at least 100 years.
+- Estimates assume 10 billion offline guesses per second and average discovery
+  halfway through the search space.
 
 ## Privacy model
 
 Passwords are created on the user's device. StrongPassword does not receive, store, log, analyze, or transmit generated passwords.
 
-Goal text is also processed only on the user's device. The readable goal is
-treated as predictable and is not counted as entropy; the displayed estimate is
-based only on the independently random anchor.
+Goal text is also processed only on the user's device. Its displayed bit count
+is a conditional character-by-character full-search estimate. It explicitly
+excludes dictionary and goal-aware guessing and is not measured entropy of
+human language. When letters miss the purpose target, the browser recommends
+adding words and appends random digits followed by random symbols.
 
 The optional MCP endpoint is read-only. It publishes public site metadata, safe-password FAQ content, and prompts only. It does not generate, receive, store, log, or transmit passwords.
 

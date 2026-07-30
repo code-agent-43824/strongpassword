@@ -55,7 +55,8 @@ test("reads safe-password FAQ answers", () => {
 
   const text = response.result.contents[0].text;
   assert.match(text, /How do I make a safe password/);
-  assert.match(text, /Use a unique random password/);
+  assert.match(text, /Use a unique password/);
+  assert.match(text, /10 billion offline guesses per second/);
   assert.match(text, /Do not send real passwords/);
 });
 

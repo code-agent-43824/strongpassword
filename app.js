@@ -1,10 +1,8 @@
 import {
-  GOAL_ANCHOR_OPTIONS,
   PRESETS,
-  crackEstimate,
+  buildGoalPassword,
+  estimateCrackYears,
   estimateEntropy,
-  estimateGoalEntropy,
-  generateGoalPassword,
   generatePassword,
   normalizeOptions,
   strengthLabel
@@ -13,15 +11,16 @@ import {
 const state = {
   lang: initialLanguage(),
   mode: "random",
-  preset: "everyday",
+  preset: "social",
   goal: "",
+  goalResult: null,
   password: "",
   error: "",
   copied: false,
   visible: true,
   timer: null,
   countdown: 45,
-  options: normalizeOptions({ preset: "everyday" })
+  options: normalizeOptions({ preset: "social" })
 };
 
 const dictionary = {
@@ -29,19 +28,33 @@ const dictionary = {
     product: "StrongPassword",
     title: "Генератор сложных паролей",
     subtitle: "Создаёт пароли локально в браузере. Без сервера, логов и аналитики.",
-    preset: "Профиль",
+    preset: "Назначение",
     mode: "Режим",
     randomMode: "Случайный пароль",
     goalMode: "Пароль-цель",
     goalLabel: "Что вы хотите помнить или изменить?",
     goalPlaceholder: "Например: звонить маме каждую неделю",
-    goalHint: "Текст остаётся в браузере. Безопасность даёт отдельный случайный 16-символьный якорь; предсказуемая часть не считается энтропией.",
+    goalHint: "Оценка считается побуквенно и не учитывает словарный или целевой подбор. Текст остаётся только в браузере.",
     goalRequired: "Сначала введите цель.",
     goalUnsupported: "Используйте буквы русского или латинского алфавита и цифры.",
-    everyday: "Обычный аккаунт",
+    disposable: "Одноразовый сервис",
+    social: "Соцсети",
+    government: "Госуслуги",
     finance: "Банк и финансы",
+    ai: "AI-сервисы",
+    primary: "Основная почта / менеджер",
     server: "Серверы и админки",
     recovery: "Резервный код",
+    targetYears: "Ориентир полного перебора",
+    years: "лет",
+    year: "год",
+    yearsFew: "года",
+    months: "месяцев",
+    goalEnough: "Букв достаточно; дополнительный хвост не нужен.",
+    goalMore: "Для выбранного уровня лучше добавить ещё",
+    letters: "букв. Пока добавлен хвост:",
+    digitsCount: "цифр",
+    symbolsCount: "символов",
     length: "Длина",
     lower: "a-z",
     upper: "A-Z",
@@ -82,19 +95,33 @@ const dictionary = {
     product: "StrongPassword",
     title: "Strong password generator",
     subtitle: "Creates passwords locally in your browser. No backend, logs or analytics.",
-    preset: "Profile",
+    preset: "Purpose",
     mode: "Mode",
     randomMode: "Random password",
     goalMode: "Goal password",
     goalLabel: "What do you want to remember or change?",
     goalPlaceholder: "For example: call my mother every week",
-    goalHint: "The text stays in your browser. Security comes from a separate random 16-character anchor; the predictable part is not counted as entropy.",
+    goalHint: "The estimate counts characters and excludes dictionary or goal-aware guessing. The text stays only in your browser.",
     goalRequired: "Enter a goal first.",
     goalUnsupported: "Use Latin or Cyrillic letters and numbers.",
-    everyday: "Everyday account",
+    disposable: "One-time service",
+    social: "Social networks",
+    government: "Government services",
     finance: "Banking and finance",
+    ai: "AI services",
+    primary: "Primary email / manager",
     server: "Servers and admin panels",
     recovery: "Recovery code",
+    targetYears: "Full-search target",
+    years: "years",
+    year: "year",
+    yearsFew: "years",
+    months: "months",
+    goalEnough: "There are enough letters; no extra suffix is needed.",
+    goalMore: "For this profile, add about",
+    letters: "letters. A suffix was added for now:",
+    digitsCount: "digits",
+    symbolsCount: "symbols",
     length: "Length",
     lower: "a-z",
     upper: "A-Z",
@@ -144,6 +171,7 @@ const elements = {
   mode: document.querySelector("[data-mode]"),
   goalField: document.querySelector("[data-goal-field]"),
   goal: document.querySelector("[data-goal]"),
+  goalFeedback: document.querySelector("[data-goal-feedback]"),
   randomSettings: document.querySelectorAll("[data-random-setting]"),
   length: document.querySelector("[data-length]"),
   lengthValue: document.querySelector("[data-length-value]"),
@@ -176,9 +204,15 @@ registerWebMcpTools();
 
 function createPassword() {
   try {
-    state.password = state.mode === "goal"
-      ? generateGoalPassword(state.goal)
-      : generatePassword(state.options);
+    if (state.mode === "goal") {
+      state.goalResult = buildGoalPassword(state.goal, {
+        targetBits: PRESETS[state.preset].targetBits
+      });
+      state.password = state.goalResult.password;
+    } else {
+      state.goalResult = null;
+      state.password = generatePassword(state.options);
+    }
     state.error = "";
     state.visible = true;
     state.countdown = 45;
@@ -232,7 +266,9 @@ function applyPreset(event) {
   state.preset = event.target.value;
   state.options = normalizeOptions({ preset: state.preset, ...PRESETS[state.preset] });
   render();
-  createPassword();
+  if (state.mode === "random" || state.goal.trim()) {
+    createPassword();
+  }
 }
 
 function setMode(event) {
@@ -251,6 +287,7 @@ function setMode(event) {
 
 function updateGoal(event) {
   state.goal = event.target.value.slice(0, 80);
+  state.goalResult = null;
   state.error = "";
   render();
 }
@@ -287,10 +324,10 @@ function restartTimer() {
 function render() {
   const t = dictionary[state.lang] || dictionary.ru;
   const entropy = state.mode === "goal"
-    ? estimateGoalEntropy()
+    ? state.goalResult?.totalEntropy || 0
     : estimateEntropy(state.password, state.options);
   const label = strengthLabel(entropy);
-  const crack = crackEstimate(entropy);
+  const crackYears = estimateCrackYears(entropy);
 
   document.documentElement.lang = state.lang;
   elements.app.dataset.strength = label;
@@ -311,13 +348,17 @@ function render() {
   elements.password.dataset.size = passwordSize(state.password);
   elements.entropy.textContent = state.password ? String(entropy) : "0";
   elements.strength.textContent = state.password ? t.strengths[label] : "-";
-  elements.crack.textContent = state.password ? t.cracks[crack] : "-";
+  elements.crack.textContent = state.password ? formatCrackTime(crackYears, t) : "-";
   elements.countdown.textContent = state.visible && state.password ? t.visible + " " + state.countdown + " " + t.seconds : "";
   elements.error.textContent = state.error === "goal_unsupported"
     ? t.goalUnsupported
     : state.error
       ? t.goalRequired
       : "";
+  elements.goalFeedback.textContent = goalFeedback(t);
+  elements.goalFeedback.dataset.warning = String(
+    Boolean(state.goalResult?.additionalLetters)
+  );
   elements.copy.textContent = state.copied ? t.copied : t.copy;
   elements.visibility.textContent = state.visible ? t.hide : t.show;
 
@@ -336,6 +377,34 @@ function render() {
   for (const option of elements.mode.options) {
     option.textContent = t[option.value + "Mode"] || option.textContent;
   }
+}
+
+function goalFeedback(t) {
+  if (state.mode !== "goal" || !state.goalResult) return "";
+  if (state.goalResult.additionalLetters === 0) return t.goalEnough;
+  return `${t.goalMore} ${state.goalResult.additionalLetters} ${t.letters} ` +
+    `${state.goalResult.digitCount} ${t.digitsCount} + ` +
+    `${state.goalResult.symbolCount} ${t.symbolsCount}.`;
+}
+
+function formatCrackTime(years, t) {
+  if (years >= 100) return `100+ ${t.years}`;
+  if (years >= 1) {
+    const rounded = Math.max(1, Math.round(years));
+    return `≈ ${rounded} ${yearUnit(rounded, t)}`;
+  }
+  const months = Math.max(1, Math.round(years * 12));
+  return `≈ ${months} ${t.months}`;
+}
+
+function yearUnit(years, t) {
+  if (state.lang !== "ru") return years === 1 ? t.year : t.years;
+  const lastTwo = years % 100;
+  if (lastTwo >= 11 && lastTwo <= 14) return t.years;
+  const last = years % 10;
+  if (last === 1) return t.year;
+  if (last >= 2 && last <= 4) return t.yearsFew;
+  return t.years;
 }
 
 function passwordSize(password) {
@@ -368,7 +437,7 @@ function registerWebMcpTools() {
       execute: async () => ({
         guidance: [
           "Use a unique random password for every important service.",
-          "Use at least 16 random characters for everyday accounts; use longer secrets for finance, infrastructure, email, and recovery codes.",
+          "Choose a purpose profile appropriate to the account value and expected lifetime.",
           "Do not reuse passwords across services.",
           "Store passwords in a reputable password manager.",
           "Enable multi-factor authentication on important accounts.",
@@ -386,26 +455,28 @@ function registerWebMcpTools() {
         properties: {
           useCase: {
             type: "string",
-            enum: ["everyday", "finance", "server", "recovery", "goal"]
+            enum: [
+              "disposable",
+              "social",
+              "government",
+              "finance",
+              "ai",
+              "primary",
+              "server",
+              "recovery"
+            ]
           }
         }
       },
-      execute: async ({ useCase = "everyday" } = {}) => {
-        if (useCase === "goal") {
-          return {
-            preset: "goal",
-            settings: {
-              mode: "goal",
-              randomAnchor: GOAL_ANCHOR_OPTIONS,
-              minimumEstimatedEntropyBits: estimateGoalEntropy()
-            },
-            privacy: "This tool returns settings only. It does not receive a personal goal or generate, inspect, store, or transmit a password."
-          };
-        }
-        const preset = PRESETS[useCase] ? useCase : "everyday";
+      execute: async ({ useCase = "social" } = {}) => {
+        const preset = PRESETS[useCase] ? useCase : "social";
         return {
           preset,
-          settings: normalizeOptions({ preset, ...PRESETS[preset] }),
+          settings: {
+            ...normalizeOptions({ preset, ...PRESETS[preset] }),
+            targetYears: PRESETS[preset].targetYears,
+            targetBits: PRESETS[preset].targetBits
+          },
           privacy: "This tool returns settings only. It does not generate, inspect, store, or transmit a password."
         };
       }

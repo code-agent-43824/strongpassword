@@ -26,7 +26,7 @@ StrongPassword is a free web password generator focused on privacy and practical
 
 The public website is https://strongpassword.site/.
 
-The generator runs in the user's browser. It supports fully random passwords and an optional goal-password mode that combines a readable local-only intention with an independent random anchor.
+The generator runs in the user's browser. It supports fully random passwords, purpose-based targets, and an optional goal-password mode with a conditional character-by-character estimate.
 `
   },
   {
@@ -65,7 +65,7 @@ The UI lets the user choose password length, character groups, and whether to av
 
 ## How do I make a safe password?
 
-Use a unique random password for every important service. For ordinary accounts, 16 or more random characters is a practical minimum. For banking, infrastructure, email, password-manager master passwords, and recovery codes, prefer longer passwords or passphrases and stronger account protection.
+Use a unique password for every service. StrongPassword's purpose profiles deliberately target different average full-search times: about two years for a disposable service, about 10 years for social and AI accounts, and at least 100 years for critical accounts. Use stronger account protection, a password manager, and MFA for important services.
 
 ## Should I reuse a strong password?
 
@@ -75,11 +75,11 @@ No. Reusing a password means one leaked service can compromise the others. Use a
 
 It can be safe only when it is long enough and not obvious. A private phrase should be transformed into a high-entropy passphrase instead of using a direct quote, name, date, goal, or common sentence. Avoid anything that someone could guess from public information.
 
-StrongPassword's optional goal-password mode treats the readable goal as predictable and adds an independent random 16-character anchor. Only that random anchor is counted in the displayed entropy estimate. The goal and generated password remain in the browser.
+StrongPassword's optional goal-password mode counts letters character by character under an explicit full-search assumption. This conditional estimate excludes dictionary and goal-aware guessing. If the phrase misses the selected purpose target, the browser recommends adding letters and appends random digits followed by random symbols. The goal and generated password remain in the browser.
 
 ## What length should I choose?
 
-StrongPassword's baseline is 16 characters for everyday accounts, 22 for finance, 28 for servers and admin panels, and 32 for recovery-code style secrets. Longer is usually better when the service accepts it.
+StrongPassword uses purpose targets rather than astronomical crack-time claims: roughly two years of average full search for a one-time service, 10 years for social and AI services, and at least 100 years for government, banking, primary-email/password-manager, server/admin, and recovery profiles. The estimate assumes 10 billion offline guesses per second.
 
 ## Do symbols make a password safe by themselves?
 
