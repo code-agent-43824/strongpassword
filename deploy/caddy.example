@@ -23,7 +23,7 @@ strongpassword.site {
 	handle @markdownHome {
 		header Content-Type "text/markdown; charset=utf-8"
 		header Vary "Accept"
-		header x-markdown-tokens "323"
+		header x-markdown-tokens "346"
 		rewrite * /index.md
 		file_server
 	}

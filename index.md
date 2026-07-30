@@ -8,9 +8,11 @@ StrongPassword is a private, client-side strong password generator.
 - Uses the Web Crypto API through `crypto.getRandomValues()`, not `Math.random()`.
 - Supports eight purpose levels for one-time, social, AI, government, banking,
   primary-email/password-manager, infrastructure, and recovery scenarios.
-- Shows a live eight-segment meter. Random defaults progress from 10 to 22
+- Shows a live eight-card level ladder. Random defaults progress from 10 to 22
   characters and alternate symbol compatibility, so every purpose change is
   visible.
+- Shows both modes in a two-position switch and every purpose in one
+  keyboard-accessible card grid for quick comparison.
 - Offers an optional goal-password mode that counts the readable phrase
   character by character and adds grouped random digits and symbols only when
   the selected profile needs them.
@@ -34,8 +36,8 @@ is a conditional character-by-character full-search estimate. It explicitly
 excludes dictionary and goal-aware guessing and is not measured entropy of
 human language. When letters miss the purpose target, the browser recommends
 adding words and appends random digits followed by random symbols. The purpose
-meter explicitly says whether a suffix was added or the phrase already
-exceeded the selected minimum.
+selected card and summary explicitly say whether a suffix was added or the
+phrase already exceeded the selected minimum.
 
 The optional MCP endpoint is read-only. It publishes public site metadata, safe-password FAQ content, and prompts only. It does not generate, receive, store, log, or transmit passwords.
 

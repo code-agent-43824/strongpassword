@@ -186,17 +186,17 @@ const elements = {
   crack: document.querySelector("[data-crack]"),
   countdown: document.querySelector("[data-countdown]"),
   error: document.querySelector("[data-error]"),
-  mode: document.querySelector("[data-mode]"),
+  modes: document.querySelectorAll("[data-mode]"),
   goalField: document.querySelector("[data-goal-field]"),
   goal: document.querySelector("[data-goal]"),
   goalFeedback: document.querySelector("[data-goal-feedback]"),
   profileCard: document.querySelector("[data-profile-card]"),
-  profileMeter: document.querySelector("[data-profile-meter]"),
   profileHint: document.querySelector("[data-profile-hint]"),
+  purposeMeta: document.querySelectorAll("[data-purpose-meta]"),
   randomSettings: document.querySelectorAll("[data-random-setting]"),
   length: document.querySelector("[data-length]"),
   lengthValue: document.querySelector("[data-length-value]"),
-  preset: document.querySelector("[data-preset]"),
+  presets: document.querySelectorAll("[data-preset]"),
   options: document.querySelectorAll("[data-option]"),
   copy: document.querySelector("[data-copy]"),
   visibility: document.querySelector("[data-visibility]"),
@@ -209,8 +209,6 @@ elements.generate.addEventListener("click", createPassword);
 elements.copy.addEventListener("click", copyPassword);
 elements.visibility.addEventListener("click", toggleVisibility);
 elements.length.addEventListener("input", updateLength);
-elements.preset.addEventListener("change", applyPreset);
-elements.mode.addEventListener("change", setMode);
 elements.goal.addEventListener("input", updateGoal);
 elements.goal.addEventListener("keydown", generateGoalOnEnter);
 elements.lang.addEventListener("change", setLanguage);
@@ -219,7 +217,14 @@ for (const option of elements.options) {
   option.addEventListener("change", updateOption);
 }
 
-setupProfileMeter();
+for (const mode of elements.modes) {
+  mode.addEventListener("change", setMode);
+}
+
+for (const preset of elements.presets) {
+  preset.addEventListener("change", applyPreset);
+}
+
 render();
 createPassword();
 registerWebMcpTools();
@@ -303,7 +308,6 @@ function setMode(event) {
     state.password = "";
     clearInterval(state.timer);
     render();
-    elements.goal.focus();
   }
 }
 
@@ -354,8 +358,12 @@ function render() {
   document.documentElement.lang = state.lang;
   elements.app.dataset.strength = label;
   elements.lang.value = state.lang;
-  elements.mode.value = state.mode;
-  elements.preset.value = state.preset;
+  for (const mode of elements.modes) {
+    mode.checked = mode.value === state.mode;
+  }
+  for (const preset of elements.presets) {
+    preset.checked = preset.value === state.preset;
+  }
   elements.goal.value = state.goal;
   elements.goal.placeholder = t.goalPlaceholder;
   elements.goalField.hidden = state.mode !== "goal";
@@ -381,6 +389,7 @@ function render() {
   elements.goalFeedback.dataset.warning = String(
     Boolean(state.goalResult?.additionalLetters)
   );
+  renderPurposeChoices(t);
   renderProfile(t, entropy);
   elements.copy.textContent = state.copied ? t.copied : t.copy;
   elements.visibility.textContent = state.visible ? t.hide : t.show;
@@ -393,20 +402,18 @@ function render() {
     element.textContent = t[element.dataset.i18n] || element.textContent;
   }
 
-  for (const option of elements.preset.options) {
-    option.textContent = t[option.value] || option.textContent;
-  }
-
-  for (const option of elements.mode.options) {
-    option.textContent = t[option.value + "Mode"] || option.textContent;
-  }
 }
 
-function setupProfileMeter() {
-  for (let level = 1; level <= 8; level += 1) {
-    const segment = document.createElement("span");
-    segment.dataset.level = String(level);
-    elements.profileMeter.append(segment);
+function renderPurposeChoices(t) {
+  for (const meta of elements.purposeMeta) {
+    const profile = PRESETS[meta.dataset.purposeMeta];
+    if (state.mode === "goal") {
+      meta.textContent =
+        `${formatCrackTime(estimateCrackYears(profile.targetBits), t)} · ${t.profileMinimum}`;
+      continue;
+    }
+    const symbolPolicy = profile.symbols ? t.withSymbols : t.withoutSymbols;
+    meta.textContent = `${profile.length} ${t.characters} · ${symbolPolicy}`;
   }
 }
 
@@ -414,17 +421,8 @@ function renderProfile(t, entropy) {
   const profile = PRESETS[state.preset];
   const symbolPolicy = profile.symbols ? t.withSymbols : t.withoutSymbols;
   const target = formatCrackTime(estimateCrackYears(profile.targetBits), t);
-  const activeSegments = elements.profileMeter.querySelectorAll("span");
-
-  for (const segment of activeSegments) {
-    segment.dataset.active = String(Number(segment.dataset.level) <= profile.level);
-  }
 
   elements.profileCard.dataset.level = String(profile.level);
-  elements.profileMeter.setAttribute(
-    "aria-label",
-    `${t.level} ${profile.level} / 8`
-  );
 
   if (state.mode === "goal") {
     const goalState = !state.goalResult

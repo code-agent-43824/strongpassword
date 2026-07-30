@@ -83,30 +83,29 @@
         </section>
 
         <div class="controls" role="group" aria-label="Password settings">
-          <label class="field">
-            <span data-i18n="mode">Режим</span>
-            <select data-mode>
-              <option value="random">Случайный пароль</option>
-              <option value="goal">Пароль-цель</option>
-            </select>
-          </label>
+          <fieldset class="choice-section mode-section">
+            <legend data-i18n="mode">Режим</legend>
+            <div class="mode-switch">
+              <label><input type="radio" name="password-mode" value="random" data-mode checked><span data-i18n="randomMode">Случайный пароль</span></label>
+              <label><input type="radio" name="password-mode" value="goal" data-mode><span data-i18n="goalMode">Пароль-цель</span></label>
+            </div>
+          </fieldset>
 
-          <label class="field">
-            <span data-i18n="preset">Назначение</span>
-            <select data-preset>
-              <option value="disposable">Одноразовый сервис</option>
-              <option value="social" selected>Соцсети</option>
-              <option value="ai">AI-сервисы</option>
-              <option value="government">Госуслуги</option>
-              <option value="finance">Банк и финансы</option>
-              <option value="primary">Основная почта / менеджер</option>
-              <option value="server">Серверы и админки</option>
-              <option value="recovery">Резервный код</option>
-            </select>
-          </label>
+          <fieldset class="choice-section purpose-section">
+            <legend data-i18n="preset">Назначение</legend>
+            <div class="purpose-grid">
+              <label class="purpose-option"><input type="radio" name="password-purpose" value="disposable" data-preset><span><b><strong data-i18n="disposable">Одноразовый сервис</strong><i>1</i></b><small data-purpose-meta="disposable"></small></span></label>
+              <label class="purpose-option"><input type="radio" name="password-purpose" value="social" data-preset checked><span><b><strong data-i18n="social">Соцсети</strong><i>2</i></b><small data-purpose-meta="social"></small></span></label>
+              <label class="purpose-option"><input type="radio" name="password-purpose" value="ai" data-preset><span><b><strong data-i18n="ai">AI-сервисы</strong><i>3</i></b><small data-purpose-meta="ai"></small></span></label>
+              <label class="purpose-option"><input type="radio" name="password-purpose" value="government" data-preset><span><b><strong data-i18n="government">Госуслуги</strong><i>4</i></b><small data-purpose-meta="government"></small></span></label>
+              <label class="purpose-option"><input type="radio" name="password-purpose" value="finance" data-preset><span><b><strong data-i18n="finance">Банк и финансы</strong><i>5</i></b><small data-purpose-meta="finance"></small></span></label>
+              <label class="purpose-option"><input type="radio" name="password-purpose" value="primary" data-preset><span><b><strong data-i18n="primary">Основная почта / менеджер</strong><i>6</i></b><small data-purpose-meta="primary"></small></span></label>
+              <label class="purpose-option"><input type="radio" name="password-purpose" value="server" data-preset><span><b><strong data-i18n="server">Серверы и админки</strong><i>7</i></b><small data-purpose-meta="server"></small></span></label>
+              <label class="purpose-option"><input type="radio" name="password-purpose" value="recovery" data-preset><span><b><strong data-i18n="recovery">Резервный код</strong><i>8</i></b><small data-purpose-meta="recovery"></small></span></label>
+            </div>
+          </fieldset>
 
           <div class="profile-card" data-profile-card>
-            <div class="profile-meter" data-profile-meter role="img" aria-label="Уровень 2 / 8"></div>
             <p data-profile-hint aria-live="polite"></p>
           </div>
 

@@ -83,30 +83,29 @@
         </section>
 
         <div class="controls" role="group" aria-label="Password settings">
-          <label class="field">
-            <span data-i18n="mode">Mode</span>
-            <select data-mode>
-              <option value="random">Random password</option>
-              <option value="goal">Goal password</option>
-            </select>
-          </label>
+          <fieldset class="choice-section mode-section">
+            <legend data-i18n="mode">Mode</legend>
+            <div class="mode-switch">
+              <label><input type="radio" name="password-mode" value="random" data-mode checked><span data-i18n="randomMode">Random password</span></label>
+              <label><input type="radio" name="password-mode" value="goal" data-mode><span data-i18n="goalMode">Goal password</span></label>
+            </div>
+          </fieldset>
 
-          <label class="field">
-            <span data-i18n="preset">Purpose</span>
-            <select data-preset>
-              <option value="disposable">One-time service</option>
-              <option value="social" selected>Social networks</option>
-              <option value="ai">AI services</option>
-              <option value="government">Government services</option>
-              <option value="finance">Banking and finance</option>
-              <option value="primary">Primary email / manager</option>
-              <option value="server">Servers and admin panels</option>
-              <option value="recovery">Recovery code</option>
-            </select>
-          </label>
+          <fieldset class="choice-section purpose-section">
+            <legend data-i18n="preset">Purpose</legend>
+            <div class="purpose-grid">
+              <label class="purpose-option"><input type="radio" name="password-purpose" value="disposable" data-preset><span><b><strong data-i18n="disposable">One-time service</strong><i>1</i></b><small data-purpose-meta="disposable"></small></span></label>
+              <label class="purpose-option"><input type="radio" name="password-purpose" value="social" data-preset checked><span><b><strong data-i18n="social">Social networks</strong><i>2</i></b><small data-purpose-meta="social"></small></span></label>
+              <label class="purpose-option"><input type="radio" name="password-purpose" value="ai" data-preset><span><b><strong data-i18n="ai">AI services</strong><i>3</i></b><small data-purpose-meta="ai"></small></span></label>
+              <label class="purpose-option"><input type="radio" name="password-purpose" value="government" data-preset><span><b><strong data-i18n="government">Government services</strong><i>4</i></b><small data-purpose-meta="government"></small></span></label>
+              <label class="purpose-option"><input type="radio" name="password-purpose" value="finance" data-preset><span><b><strong data-i18n="finance">Banking and finance</strong><i>5</i></b><small data-purpose-meta="finance"></small></span></label>
+              <label class="purpose-option"><input type="radio" name="password-purpose" value="primary" data-preset><span><b><strong data-i18n="primary">Primary email / manager</strong><i>6</i></b><small data-purpose-meta="primary"></small></span></label>
+              <label class="purpose-option"><input type="radio" name="password-purpose" value="server" data-preset><span><b><strong data-i18n="server">Servers and admin panels</strong><i>7</i></b><small data-purpose-meta="server"></small></span></label>
+              <label class="purpose-option"><input type="radio" name="password-purpose" value="recovery" data-preset><span><b><strong data-i18n="recovery">Recovery code</strong><i>8</i></b><small data-purpose-meta="recovery"></small></span></label>
+            </div>
+          </fieldset>
 
           <div class="profile-card" data-profile-card>
-            <div class="profile-meter" data-profile-meter role="img" aria-label="Level 2 / 8"></div>
             <p data-profile-hint aria-live="polite"></p>
           </div>
 

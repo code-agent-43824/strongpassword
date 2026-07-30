@@ -10,11 +10,13 @@ Private client-side generator for strong passwords.
 - Supports eight visibly distinct purpose levels from one-time services to
   recovery codes. Random defaults progress from 10 to 22 characters and
   deliberately alternate symbol compatibility.
+- Presents mode as a two-position switch and all eight purposes as an
+  at-a-glance keyboard-accessible card grid instead of dropdown menus.
 - Includes an optional goal-password mode that estimates the readable phrase
   character by character and appends grouped random digits and symbols only
   when the selected profile needs them.
-- Shows a live eight-segment meter and explains whether a goal profile added a
-  suffix or the phrase already exceeded its minimum.
+- Highlights the selected level card and explains whether a goal profile added
+  a suffix or the phrase already exceeded its minimum.
 - Shows local entropy and brute-force estimates.
 - Ships as a static site. No backend is required.
 

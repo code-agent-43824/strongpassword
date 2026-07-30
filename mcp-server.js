@@ -75,7 +75,7 @@ No. Reusing a password means one leaked service can compromise the others. Use a
 
 It can be safe only when it is long enough and not obvious. A private phrase should be transformed into a high-entropy passphrase instead of using a direct quote, name, date, goal, or common sentence. Avoid anything that someone could guess from public information.
 
-StrongPassword's optional goal-password mode counts letters character by character under an explicit full-search assumption. This conditional estimate excludes dictionary and goal-aware guessing. If the phrase misses the selected purpose target, the browser recommends adding letters and appends random digits followed by random symbols. A live purpose meter says whether that profile added a suffix or the phrase already exceeded its minimum. The goal and generated password remain in the browser.
+StrongPassword's optional goal-password mode counts letters character by character under an explicit full-search assumption. This conditional estimate excludes dictionary and goal-aware guessing. If the phrase misses the selected purpose target, the browser recommends adding letters and appends random digits followed by random symbols. The selected purpose card and live summary say whether that profile added a suffix or the phrase already exceeded its minimum. The goal and generated password remain in the browser.
 
 ## What length should I choose?
 

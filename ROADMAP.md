@@ -31,12 +31,17 @@ profile should explain why its defaults were selected.
 - Server or administrator access.
 - Recovery code.
 
-The selector is an eight-level ladder with an immediately visible meter:
+The selector is an immediately visible eight-level card ladder:
 one-time, social, AI, government, finance, primary email/manager, server/admin,
 and recovery. Random-password defaults progress through 10, 12, 12, 14, 14,
 16, 18, and 22 characters; symbol support alternates between neighbouring
 levels so changing purpose has an obvious result without making every password
 needlessly long. Recovery is intentionally the longest.
+
+The final selector UI exposes both modes in one two-position switch and all
+eight purposes in a responsive card grid. Each card shows its level and the
+relevant length/symbol policy or goal threshold, so no option is hidden behind
+a dropdown.
 
 All eight goal-password minimums are distinct, progressing from 60 to 66 bits
 (roughly two, four, seven, 15, 29, 58, 83, and 117 years under the stated
