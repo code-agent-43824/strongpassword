@@ -1,7 +1,10 @@
 import {
+  GOAL_ANCHOR_OPTIONS,
   PRESETS,
   crackEstimate,
   estimateEntropy,
+  estimateGoalEntropy,
+  generateGoalPassword,
   generatePassword,
   normalizeOptions,
   strengthLabel
@@ -9,8 +12,11 @@ import {
 
 const state = {
   lang: initialLanguage(),
+  mode: "random",
   preset: "everyday",
+  goal: "",
   password: "",
+  error: "",
   copied: false,
   visible: true,
   timer: null,
@@ -24,6 +30,14 @@ const dictionary = {
     title: "Генератор сложных паролей",
     subtitle: "Создаёт пароли локально в браузере. Без сервера, логов и аналитики.",
     preset: "Профиль",
+    mode: "Режим",
+    randomMode: "Случайный пароль",
+    goalMode: "Пароль-цель",
+    goalLabel: "Что вы хотите помнить или изменить?",
+    goalPlaceholder: "Например: звонить маме каждую неделю",
+    goalHint: "Текст остаётся в браузере. Безопасность даёт отдельный случайный 16-символьный якорь; предсказуемая часть не считается энтропией.",
+    goalRequired: "Сначала введите цель.",
+    goalUnsupported: "Используйте буквы русского или латинского алфавита и цифры.",
     everyday: "Обычный аккаунт",
     finance: "Банк и финансы",
     server: "Серверы и админки",
@@ -69,6 +83,14 @@ const dictionary = {
     title: "Strong password generator",
     subtitle: "Creates passwords locally in your browser. No backend, logs or analytics.",
     preset: "Profile",
+    mode: "Mode",
+    randomMode: "Random password",
+    goalMode: "Goal password",
+    goalLabel: "What do you want to remember or change?",
+    goalPlaceholder: "For example: call my mother every week",
+    goalHint: "The text stays in your browser. Security comes from a separate random 16-character anchor; the predictable part is not counted as entropy.",
+    goalRequired: "Enter a goal first.",
+    goalUnsupported: "Use Latin or Cyrillic letters and numbers.",
     everyday: "Everyday account",
     finance: "Banking and finance",
     server: "Servers and admin panels",
@@ -118,6 +140,11 @@ const elements = {
   strength: document.querySelector("[data-strength]"),
   crack: document.querySelector("[data-crack]"),
   countdown: document.querySelector("[data-countdown]"),
+  error: document.querySelector("[data-error]"),
+  mode: document.querySelector("[data-mode]"),
+  goalField: document.querySelector("[data-goal-field]"),
+  goal: document.querySelector("[data-goal]"),
+  randomSettings: document.querySelectorAll("[data-random-setting]"),
   length: document.querySelector("[data-length]"),
   lengthValue: document.querySelector("[data-length-value]"),
   preset: document.querySelector("[data-preset]"),
@@ -134,6 +161,9 @@ elements.copy.addEventListener("click", copyPassword);
 elements.visibility.addEventListener("click", toggleVisibility);
 elements.length.addEventListener("input", updateLength);
 elements.preset.addEventListener("change", applyPreset);
+elements.mode.addEventListener("change", setMode);
+elements.goal.addEventListener("input", updateGoal);
+elements.goal.addEventListener("keydown", generateGoalOnEnter);
 elements.lang.addEventListener("change", setLanguage);
 
 for (const option of elements.options) {
@@ -146,13 +176,18 @@ registerWebMcpTools();
 
 function createPassword() {
   try {
-    state.password = generatePassword(state.options);
+    state.password = state.mode === "goal"
+      ? generateGoalPassword(state.goal)
+      : generatePassword(state.options);
+    state.error = "";
     state.visible = true;
     state.countdown = 45;
     restartTimer();
     render();
   } catch (error) {
-    state.password = error.message;
+    state.password = "";
+    state.error = error.code || "goal_required";
+    clearInterval(state.timer);
     render();
   }
 }
@@ -200,6 +235,33 @@ function applyPreset(event) {
   createPassword();
 }
 
+function setMode(event) {
+  state.mode = event.target.value === "goal" ? "goal" : "random";
+  state.error = "";
+  render();
+  if (state.mode === "random" || state.goal.trim()) {
+    createPassword();
+  } else {
+    state.password = "";
+    clearInterval(state.timer);
+    render();
+    elements.goal.focus();
+  }
+}
+
+function updateGoal(event) {
+  state.goal = event.target.value.slice(0, 80);
+  state.error = "";
+  render();
+}
+
+function generateGoalOnEnter(event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    createPassword();
+  }
+}
+
 function setLanguage(event) {
   const target = event.target.value === "en" ? "/en/" : "/ru/";
   if (window.location.pathname !== target) {
@@ -224,14 +286,23 @@ function restartTimer() {
 
 function render() {
   const t = dictionary[state.lang] || dictionary.ru;
-  const entropy = estimateEntropy(state.password, state.options);
+  const entropy = state.mode === "goal"
+    ? estimateGoalEntropy()
+    : estimateEntropy(state.password, state.options);
   const label = strengthLabel(entropy);
   const crack = crackEstimate(entropy);
 
   document.documentElement.lang = state.lang;
   elements.app.dataset.strength = label;
   elements.lang.value = state.lang;
+  elements.mode.value = state.mode;
   elements.preset.value = state.preset;
+  elements.goal.value = state.goal;
+  elements.goal.placeholder = t.goalPlaceholder;
+  elements.goalField.hidden = state.mode !== "goal";
+  for (const setting of elements.randomSettings) {
+    setting.hidden = state.mode === "goal";
+  }
   elements.length.value = String(state.options.length);
   elements.lengthValue.textContent = String(state.options.length);
   elements.password.value = state.password || "";
@@ -242,6 +313,11 @@ function render() {
   elements.strength.textContent = state.password ? t.strengths[label] : "-";
   elements.crack.textContent = state.password ? t.cracks[crack] : "-";
   elements.countdown.textContent = state.visible && state.password ? t.visible + " " + state.countdown + " " + t.seconds : "";
+  elements.error.textContent = state.error === "goal_unsupported"
+    ? t.goalUnsupported
+    : state.error
+      ? t.goalRequired
+      : "";
   elements.copy.textContent = state.copied ? t.copied : t.copy;
   elements.visibility.textContent = state.visible ? t.hide : t.show;
 
@@ -255,6 +331,10 @@ function render() {
 
   for (const option of elements.preset.options) {
     option.textContent = t[option.value] || option.textContent;
+  }
+
+  for (const option of elements.mode.options) {
+    option.textContent = t[option.value + "Mode"] || option.textContent;
   }
 }
 
@@ -306,11 +386,22 @@ function registerWebMcpTools() {
         properties: {
           useCase: {
             type: "string",
-            enum: ["everyday", "finance", "server", "recovery"]
+            enum: ["everyday", "finance", "server", "recovery", "goal"]
           }
         }
       },
       execute: async ({ useCase = "everyday" } = {}) => {
+        if (useCase === "goal") {
+          return {
+            preset: "goal",
+            settings: {
+              mode: "goal",
+              randomAnchor: GOAL_ANCHOR_OPTIONS,
+              minimumEstimatedEntropyBits: estimateGoalEntropy()
+            },
+            privacy: "This tool returns settings only. It does not receive a personal goal or generate, inspect, store, or transmit a password."
+          };
+        }
         const preset = PRESETS[useCase] ? useCase : "everyday";
         return {
           preset,

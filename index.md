@@ -7,6 +7,8 @@ StrongPassword is a private, client-side strong password generator.
 - Generates passwords entirely in the browser.
 - Uses the Web Crypto API through `crypto.getRandomValues()`, not `Math.random()`.
 - Supports presets for everyday accounts, finance, infrastructure, and recovery-code style secrets.
+- Offers an optional goal-password mode that combines a readable personal
+  intention with an independent random 16-character anchor.
 - Shows entropy, strength, and brute-force estimates locally.
 - Avoids analytics, tracking, backend password handling, and server-side password generation.
 
@@ -20,6 +22,10 @@ StrongPassword is a private, client-side strong password generator.
 ## Privacy model
 
 Passwords are created on the user's device. StrongPassword does not receive, store, log, analyze, or transmit generated passwords.
+
+Goal text is also processed only on the user's device. The readable goal is
+treated as predictable and is not counted as entropy; the displayed estimate is
+based only on the independently random anchor.
 
 The optional MCP endpoint is read-only. It publishes public site metadata, safe-password FAQ content, and prompts only. It does not generate, receive, store, log, or transmit passwords.
 

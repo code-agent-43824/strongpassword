@@ -26,7 +26,7 @@ StrongPassword is a free web password generator focused on privacy and practical
 
 The public website is https://strongpassword.site/.
 
-The generator runs in the user's browser. It is designed for users who need random passwords for ordinary accounts, finance, infrastructure, and recovery-code scenarios.
+The generator runs in the user's browser. It supports fully random passwords and an optional goal-password mode that combines a readable local-only intention with an independent random anchor.
 `
   },
   {
@@ -39,7 +39,7 @@ The generator runs in the user's browser. It is designed for users who need rand
 
 StrongPassword generates passwords locally in the browser.
 
-Generated passwords are not sent to a StrongPassword backend, not logged by this MCP endpoint, and not exposed through MCP resources or tools. This MCP server is intentionally read-only and publishes only public site information.
+Generated passwords and personal goal text are not sent to a StrongPassword backend, not logged by this MCP endpoint, and not exposed through MCP resources or tools. This MCP server is intentionally read-only and publishes only public site information.
 `
   },
   {
@@ -74,6 +74,8 @@ No. Reusing a password means one leaked service can compromise the others. Use a
 ## Is a memorable phrase safe?
 
 It can be safe only when it is long enough and not obvious. A private phrase should be transformed into a high-entropy passphrase instead of using a direct quote, name, date, goal, or common sentence. Avoid anything that someone could guess from public information.
+
+StrongPassword's optional goal-password mode treats the readable goal as predictable and adds an independent random 16-character anchor. Only that random anchor is counted in the displayed entropy estimate. The goal and generated password remain in the browser.
 
 ## What length should I choose?
 

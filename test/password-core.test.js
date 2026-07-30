@@ -4,7 +4,10 @@ import assert from "node:assert/strict";
 import {
   characterGroups,
   estimateEntropy,
+  estimateGoalEntropy,
+  generateGoalPassword,
   generatePassword,
+  goalStem,
   normalizeOptions,
   strengthLabel
 } from "../src/password-core.js";
@@ -54,5 +57,28 @@ describe("password core", () => {
 
     assert.ok(longEntropy > shortEntropy);
     assert.equal(strengthLabel(140), "excellent");
+  });
+
+  it("builds a compatible goal stem from Russian text", () => {
+    assert.equal(goalStem("  звонить маме каждую неделю  "), "ZvonitMameKazhduyuNedelyu");
+  });
+
+  it("adds a cryptographically random anchor to a goal password", () => {
+    const password = generateGoalPassword("save for a trip", sequenceRandom());
+    const [stem, ...anchorParts] = password.split("-");
+    const anchor = anchorParts.join("-");
+
+    assert.equal(stem, "SaveForATrip");
+    assert.equal(anchor.length, 16);
+    assert.match(anchor, /[a-z]/);
+    assert.match(anchor, /[A-Z]/);
+    assert.match(anchor, /[2-9]/);
+    assert.match(anchor, /[!@#$%^&*()\-_=+\[\]{}:,.?]/);
+    assert.ok(estimateGoalEntropy() >= 96);
+  });
+
+  it("rejects empty or unsupported goal text", () => {
+    assert.throws(() => goalStem("   "), { code: "goal_required" });
+    assert.throws(() => goalStem("🎯✨"), { code: "goal_unsupported" });
   });
 });

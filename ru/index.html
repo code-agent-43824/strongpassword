@@ -64,6 +64,7 @@
             <button class="primary-button" type="button" data-copy>Копировать</button>
           </div>
           <p class="countdown" data-countdown aria-live="polite"></p>
+          <p class="error" data-error aria-live="assertive"></p>
         </div>
 
         <section class="metrics" aria-label="Password quality">
@@ -83,6 +84,14 @@
 
         <div class="controls" role="group" aria-label="Password settings">
           <label class="field">
+            <span data-i18n="mode">Режим</span>
+            <select data-mode>
+              <option value="random">Случайный пароль</option>
+              <option value="goal">Пароль-цель</option>
+            </select>
+          </label>
+
+          <label class="field" data-random-setting>
             <span data-i18n="preset">Профиль</span>
             <select data-preset>
               <option value="everyday">Обычный аккаунт</option>
@@ -92,12 +101,18 @@
             </select>
           </label>
 
-          <label class="field length-field">
+          <label class="field length-field" data-random-setting>
             <span><span data-i18n="length">Длина</span>: <strong data-length-value>16</strong></span>
             <input type="range" min="8" max="64" step="1" value="16" data-length>
           </label>
 
-          <div class="checks">
+          <label class="field goal-field" data-goal-field hidden>
+            <span data-i18n="goalLabel">Что вы хотите помнить или изменить?</span>
+            <input type="text" maxlength="80" autocomplete="off" spellcheck="false" data-goal>
+            <span class="goal-hint" data-i18n="goalHint">Текст остаётся в браузере. Безопасность даёт отдельный случайный 16-символьный якорь; предсказуемая часть не считается энтропией.</span>
+          </label>
+
+          <div class="checks" data-random-setting>
             <label><input type="checkbox" data-option="lower" checked> <span data-i18n="lower">a-z</span></label>
             <label><input type="checkbox" data-option="upper" checked> <span data-i18n="upper">A-Z</span></label>
             <label><input type="checkbox" data-option="digits" checked> <span data-i18n="digits">2-9</span></label>

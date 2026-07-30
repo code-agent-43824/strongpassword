@@ -3,6 +3,16 @@ const UPPER = "ABCDEFGHJKLMNPQRSTUVWXYZ";
 const DIGITS = "23456789";
 const SYMBOLS = "!@#$%^&*()-_=+[]{}:,.?";
 const AMBIGUOUS = "il1IoO0|\\/\x60'\";~<>";
+const GOAL_STEM_MAX_LENGTH = 32;
+const GOAL_INPUT_MAX_LENGTH = 80;
+
+const CYRILLIC_TO_LATIN = {
+  а: "a", б: "b", в: "v", г: "g", д: "d", е: "e", ё: "e", ж: "zh",
+  з: "z", и: "i", й: "y", к: "k", л: "l", м: "m", н: "n", о: "o",
+  п: "p", р: "r", с: "s", т: "t", у: "u", ф: "f", х: "h", ц: "ts",
+  ч: "ch", ш: "sh", щ: "sch", ъ: "", ы: "y", ь: "", э: "e", ю: "yu",
+  я: "ya"
+};
 
 export const PRESETS = {
   everyday: { length: 16, lower: true, upper: true, digits: true, symbols: true },
@@ -10,6 +20,15 @@ export const PRESETS = {
   server: { length: 28, lower: true, upper: true, digits: true, symbols: true },
   recovery: { length: 32, lower: true, upper: true, digits: true, symbols: false }
 };
+
+export const GOAL_ANCHOR_OPTIONS = Object.freeze({
+  length: 16,
+  lower: true,
+  upper: true,
+  digits: true,
+  symbols: true,
+  avoidAmbiguous: true
+});
 
 export function normalizeOptions(options = {}) {
   const preset = PRESETS[options.preset] || PRESETS.everyday;
@@ -65,6 +84,52 @@ export function generatePassword(options = {}, random = secureRandomInt) {
   }
 
   return shuffle(password, random).join("");
+}
+
+export function generateGoalPassword(goal, random = secureRandomInt) {
+  const stem = goalStem(goal);
+  const anchor = generatePassword(GOAL_ANCHOR_OPTIONS, random);
+  return `${stem}-${anchor}`;
+}
+
+export function goalStem(goal) {
+  const normalized = String(goal ?? "")
+    .normalize("NFKC")
+    .trim()
+    .replace(/\s+/g, " ")
+    .slice(0, GOAL_INPUT_MAX_LENGTH);
+
+  if (!normalized) {
+    throw goalError("goal_required");
+  }
+
+  const transliterated = [...normalized]
+    .map((character) => {
+      const lower = character.toLowerCase();
+      if (Object.hasOwn(CYRILLIC_TO_LATIN, lower)) {
+        return CYRILLIC_TO_LATIN[lower];
+      }
+      return character;
+    })
+    .join("");
+
+  const words = transliterated.match(/[a-z0-9]+/gi) || [];
+  const stem = words
+    .slice(0, 8)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join("")
+    .slice(0, GOAL_STEM_MAX_LENGTH);
+
+  if (!stem) {
+    throw goalError("goal_unsupported");
+  }
+
+  return stem;
+}
+
+export function estimateGoalEntropy() {
+  const poolSize = characterGroups(GOAL_ANCHOR_OPTIONS).join("").length;
+  return Math.round(GOAL_ANCHOR_OPTIONS.length * Math.log2(poolSize));
 }
 
 export function estimateEntropy(password, options = {}) {
@@ -126,4 +191,10 @@ function shuffle(items, random) {
 function removeCharacters(input, characters) {
   const blocked = new Set([...characters]);
   return [...input].filter((char) => !blocked.has(char)).join("");
+}
+
+function goalError(code) {
+  const error = new Error(code);
+  error.code = code;
+  return error;
 }

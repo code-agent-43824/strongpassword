@@ -8,6 +8,8 @@ Private client-side generator for strong passwords.
 - Uses crypto.getRandomValues(), not Math.random().
 - Guarantees that generated passwords include the selected character groups.
 - Supports presets for everyday accounts, finance, infrastructure and recovery codes.
+- Includes an optional goal-password mode that combines a readable local-only
+  intention with an independently random 16-character anchor.
 - Shows local entropy and brute-force estimates.
 - Ships as a static site. No backend is required.
 
@@ -36,4 +38,9 @@ generate, receive, store or log passwords.
 
 Passwords are generated in the browser and are never sent to a server. The deployed site should be served with restrictive security headers and without analytics.
 
+Goal text is also processed only in the browser. Its predictable content is not
+counted as entropy; the displayed estimate is based only on the random anchor.
+
 The MCP endpoint follows the same posture: it is for public site metadata only.
+
+See [ROADMAP.md](ROADMAP.md) for the ordered product plan.
