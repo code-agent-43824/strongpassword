@@ -287,6 +287,55 @@ button:hover {
   color: var(--warning);
 }
 
+.profile-card {
+  --profile-color: var(--accent);
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 9px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.profile-card[data-level="1"] {
+  --profile-color: var(--warning);
+}
+
+.profile-card[data-level="2"],
+.profile-card[data-level="3"] {
+  --profile-color: #8a721d;
+}
+
+.profile-card[data-level="4"],
+.profile-card[data-level="5"] {
+  --profile-color: #477c45;
+}
+
+.profile-meter {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.profile-meter span {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--line);
+}
+
+.profile-meter span[data-active="true"] {
+  background: var(--profile-color);
+}
+
+.profile-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
 .checks {
   grid-column: 1 / -1;
   display: grid;

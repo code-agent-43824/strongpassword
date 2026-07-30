@@ -7,10 +7,14 @@ Private client-side generator for strong passwords.
 - Generates passwords entirely in the browser.
 - Uses crypto.getRandomValues(), not Math.random().
 - Guarantees that generated passwords include the selected character groups.
-- Supports purpose profiles from one-time services to banking and administrator access.
+- Supports eight visibly distinct purpose levels from one-time services to
+  recovery codes. Random defaults progress from 10 to 22 characters and
+  deliberately alternate symbol compatibility.
 - Includes an optional goal-password mode that estimates the readable phrase
   character by character and appends grouped random digits and symbols only
   when the selected profile needs them.
+- Shows a live eight-segment meter and explains whether a goal profile added a
+  suffix or the phrase already exceeded its minimum.
 - Shows local entropy and brute-force estimates.
 - Ships as a static site. No backend is required.
 

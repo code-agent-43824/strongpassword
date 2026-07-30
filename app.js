@@ -45,6 +45,15 @@ const dictionary = {
     primary: "Основная почта / менеджер",
     server: "Серверы и админки",
     recovery: "Резервный код",
+    level: "Уровень",
+    characters: "знаков",
+    withSymbols: "со спецсимволами",
+    withoutSymbols: "без спецсимволов",
+    profileMinimum: "минимум для цели",
+    profileActual: "сейчас",
+    profileGoalPending: "Введите цель — назначение определит, нужен ли хвост.",
+    profileGoalEnough: "Фраза уже перекрывает минимум, поэтому пароль не меняется.",
+    profileGoalSuffix: "Фраза ниже минимума — назначение добавило хвост.",
     targetYears: "Ориентир полного перебора",
     years: "лет",
     year: "год",
@@ -112,6 +121,15 @@ const dictionary = {
     primary: "Primary email / manager",
     server: "Servers and admin panels",
     recovery: "Recovery code",
+    level: "Level",
+    characters: "characters",
+    withSymbols: "with symbols",
+    withoutSymbols: "without symbols",
+    profileMinimum: "goal minimum",
+    profileActual: "current",
+    profileGoalPending: "Enter a goal; the purpose will decide whether a suffix is needed.",
+    profileGoalEnough: "The phrase already exceeds the minimum, so the password stays unchanged.",
+    profileGoalSuffix: "The phrase is below the minimum, so the purpose added a suffix.",
     targetYears: "Full-search target",
     years: "years",
     year: "year",
@@ -172,6 +190,9 @@ const elements = {
   goalField: document.querySelector("[data-goal-field]"),
   goal: document.querySelector("[data-goal]"),
   goalFeedback: document.querySelector("[data-goal-feedback]"),
+  profileCard: document.querySelector("[data-profile-card]"),
+  profileMeter: document.querySelector("[data-profile-meter]"),
+  profileHint: document.querySelector("[data-profile-hint]"),
   randomSettings: document.querySelectorAll("[data-random-setting]"),
   length: document.querySelector("[data-length]"),
   lengthValue: document.querySelector("[data-length-value]"),
@@ -198,6 +219,7 @@ for (const option of elements.options) {
   option.addEventListener("change", updateOption);
 }
 
+setupProfileMeter();
 render();
 createPassword();
 registerWebMcpTools();
@@ -359,6 +381,7 @@ function render() {
   elements.goalFeedback.dataset.warning = String(
     Boolean(state.goalResult?.additionalLetters)
   );
+  renderProfile(t, entropy);
   elements.copy.textContent = state.copied ? t.copied : t.copy;
   elements.visibility.textContent = state.visible ? t.hide : t.show;
 
@@ -377,6 +400,49 @@ function render() {
   for (const option of elements.mode.options) {
     option.textContent = t[option.value + "Mode"] || option.textContent;
   }
+}
+
+function setupProfileMeter() {
+  for (let level = 1; level <= 8; level += 1) {
+    const segment = document.createElement("span");
+    segment.dataset.level = String(level);
+    elements.profileMeter.append(segment);
+  }
+}
+
+function renderProfile(t, entropy) {
+  const profile = PRESETS[state.preset];
+  const symbolPolicy = profile.symbols ? t.withSymbols : t.withoutSymbols;
+  const target = formatCrackTime(estimateCrackYears(profile.targetBits), t);
+  const activeSegments = elements.profileMeter.querySelectorAll("span");
+
+  for (const segment of activeSegments) {
+    segment.dataset.active = String(Number(segment.dataset.level) <= profile.level);
+  }
+
+  elements.profileCard.dataset.level = String(profile.level);
+  elements.profileMeter.setAttribute(
+    "aria-label",
+    `${t.level} ${profile.level} / 8`
+  );
+
+  if (state.mode === "goal") {
+    const goalState = !state.goalResult
+      ? t.profileGoalPending
+      : state.goalResult.additionalLetters
+        ? t.profileGoalSuffix
+        : t.profileGoalEnough;
+    elements.profileHint.textContent =
+      `${t.level} ${profile.level}/8 · ${t.profileMinimum}: ${target}. ${goalState}`;
+    return;
+  }
+
+  const actual = state.password
+    ? formatCrackTime(estimateCrackYears(entropy), t)
+    : "-";
+  elements.profileHint.textContent =
+    `${t.level} ${profile.level}/8 · ${profile.length} ${t.characters} · ` +
+    `${symbolPolicy} · ${t.profileActual}: ${actual}`;
 }
 
 function goalFeedback(t) {
@@ -475,7 +541,8 @@ function registerWebMcpTools() {
           settings: {
             ...normalizeOptions({ preset, ...PRESETS[preset] }),
             targetYears: PRESETS[preset].targetYears,
-            targetBits: PRESETS[preset].targetBits
+            targetBits: PRESETS[preset].targetBits,
+            level: PRESETS[preset].level
           },
           privacy: "This tool returns settings only. It does not generate, inspect, store, or transmit a password."
         };

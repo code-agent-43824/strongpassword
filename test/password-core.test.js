@@ -99,11 +99,21 @@ describe("password core", () => {
   });
 
   it("maps purpose profiles to years rather than astronomical targets", () => {
+    const profiles = Object.values(PRESETS);
+
     assert.ok(estimateCrackYears(PRESETS.disposable.targetBits) >= 1.5);
-    assert.ok(estimateCrackYears(PRESETS.social.targetBits) >= 10);
-    assert.ok(estimateCrackYears(PRESETS.finance.targetBits) >= 100);
-    assert.equal(PRESETS.disposable.length, 10);
-    assert.equal(PRESETS.finance.length, 11);
+    assert.ok(estimateCrackYears(PRESETS.social.targetBits) >= 3);
+    assert.ok(estimateCrackYears(PRESETS.recovery.targetBits) >= 100);
+    assert.deepEqual(
+      profiles.map(({ targetBits }) => targetBits),
+      [60, 61, 62, 63, 64, 65, 65.5, 66]
+    );
+    assert.deepEqual(profiles.map(({ level }) => level), [1, 2, 3, 4, 5, 6, 7, 8]);
+    assert.deepEqual(profiles.map(({ length }) => length), [10, 12, 12, 14, 14, 16, 18, 22]);
+    assert.deepEqual(
+      profiles.map(({ symbols }) => symbols),
+      [true, false, true, false, true, false, true, false]
+    );
   });
 
   it("rejects empty or unsupported goal text", () => {

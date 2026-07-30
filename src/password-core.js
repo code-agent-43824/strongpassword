@@ -19,14 +19,14 @@ const CYRILLIC_TO_LATIN = {
 };
 
 export const PURPOSE_PROFILES = {
-  disposable: profile(1.5, 10),
-  social: profile(10, 11, false),
-  government: profile(100, 11),
-  finance: profile(100, 11),
-  ai: profile(10, 11, false),
-  primary: profile(100, 11),
-  server: profile(100, 11),
-  recovery: profile(100, 11)
+  disposable: profile(60, 10, true, 1),
+  social: profile(61, 12, false, 2),
+  ai: profile(62, 12, true, 3),
+  government: profile(63, 14, false, 4),
+  finance: profile(64, 14, true, 5),
+  primary: profile(65, 16, false, 6),
+  server: profile(65.5, 18, true, 7),
+  recovery: profile(66, 22, false, 8)
 };
 
 export const PRESETS = PURPOSE_PROFILES;
@@ -274,10 +274,11 @@ function randomCharacters(pool, length, random) {
   return result;
 }
 
-function profile(targetYears, length, symbols = true) {
+function profile(targetBits, length, symbols, level) {
   return Object.freeze({
-    targetYears,
-    targetBits: targetBitsForYears(targetYears),
+    targetYears: estimateCrackYears(targetBits),
+    targetBits,
+    level,
     length,
     lower: true,
     upper: true,

@@ -31,10 +31,20 @@ profile should explain why its defaults were selected.
 - Server or administrator access.
 - Recovery code.
 
-The purpose selects a default length and full-search target: roughly two years
-for one-time services, 10 years for social and AI services, and at least 100
-years for critical profiles. Estimates assume an offline rate of 10 billion
-guesses per second and average discovery halfway through the search space.
+The selector is an eight-level ladder with an immediately visible meter:
+one-time, social, AI, government, finance, primary email/manager, server/admin,
+and recovery. Random-password defaults progress through 10, 12, 12, 14, 14,
+16, 18, and 22 characters; symbol support alternates between neighbouring
+levels so changing purpose has an obvious result without making every password
+needlessly long. Recovery is intentionally the longest.
+
+All eight goal-password minimums are distinct, progressing from 60 to 66 bits
+(roughly two, four, seven, 15, 29, 58, 83, and 117 years under the stated
+model). The live explanation says whether the purpose added a suffix or whether
+the human phrase already exceeds the selected minimum. This keeps the selector
+meaningful without damaging a convenient goal password just to make a switch
+look active. Estimates assume an offline rate of 10 billion guesses per second
+and average discovery halfway through the search space.
 Advanced users can still customize compatible settings. A "one-time" account
 must not imply that reused passwords are safe.
 
