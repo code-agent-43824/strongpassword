@@ -69,6 +69,20 @@ must not imply that reused passwords are safe.
 - Position the goal mode as personal meaning plus a clearly conditional
   character-search estimate, with random suffix assistance when needed.
 
+### Ideas to explore (not committed features)
+
+- Present a goal password as a private reminder of a personal intention that
+  the user may type regularly, not merely as a string with a strength score.
+  Possible themes include a habit, a savings goal, or staying in touch with
+  someone. Do not collect or publish users' actual intentions.
+- Explore local-only, easy-to-type variants derived from an intention, with
+  clear length and uniqueness guidance and an optional random suffix when the
+  selected target is not met.
+- Test whether this framing helps people remember unique passwords without
+  implying that personal meaning adds entropy. Warn that an attacker who knows
+  or guesses the intention may defeat the displayed character-search estimate;
+  recommend a password manager and MFA for important accounts.
+
 ## 5. Maintenance
 
 - Keep CI, backups, production smoke tests, dependencies, and security headers
