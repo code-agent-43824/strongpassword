@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
+import { request } from "node:http";
 import { test } from "node:test";
-import { handleJsonRpc } from "../mcp-server.js";
+import { createServer, handleJsonRpc } from "../mcp-server.js";
 
 test("initializes as a read-only MCP server", () => {
   const response = handleJsonRpc({
@@ -17,6 +18,75 @@ test("initializes as a read-only MCP server", () => {
   assert.equal(response.result.protocolVersion, "2025-11-25");
   assert.deepEqual(response.result.capabilities.tools, {});
   assert.match(response.result.instructions, /does not generate/);
+});
+
+test("negotiates the requested supported protocol version", () => {
+  const initialize = (protocolVersion) => handleJsonRpc({
+    jsonrpc: "2.0",
+    id: 7,
+    method: "initialize",
+    params: { protocolVersion }
+  });
+
+  assert.equal(initialize("2025-03-26").result.protocolVersion, "2025-03-26");
+  assert.equal(initialize("2025-11-25").result.protocolVersion, "2025-11-25");
+  assert.equal(initialize("1900-01-01").result.protocolVersion, "2025-11-25");
+});
+
+test("rejects null resource and prompt parameters as invalid params", () => {
+  const resource = handleJsonRpc({
+    jsonrpc: "2.0",
+    id: 8,
+    method: "resources/read",
+    params: null
+  });
+  const prompt = handleJsonRpc({
+    jsonrpc: "2.0",
+    id: 9,
+    method: "prompts/get",
+    params: null
+  });
+
+  assert.deepEqual(resource, {
+    jsonrpc: "2.0",
+    id: 8,
+    error: { code: -32602, message: "Invalid resource parameters" }
+  });
+  assert.equal(prompt.id, 9);
+  assert.equal(prompt.error.code, -32602);
+});
+
+test("returns JSON-RPC invalid params over HTTP without exposing an exception", async (t) => {
+  const server = createServer();
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+  t.after(() => new Promise((resolve) => server.close(resolve)));
+
+  const { port } = server.address();
+  const body = JSON.stringify({ jsonrpc: "2.0", id: 10, method: "resources/read", params: null });
+  const { payload, status } = await new Promise((resolve, reject) => {
+    const req = request({
+      hostname: "127.0.0.1",
+      port,
+      path: "/mcp",
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(body) }
+    }, (response) => {
+      let responseBody = "";
+      response.setEncoding("utf8");
+      response.on("data", (chunk) => { responseBody += chunk; });
+      response.on("end", () => resolve({
+        status: response.statusCode,
+        payload: JSON.parse(responseBody)
+      }));
+    });
+    req.on("error", reject);
+    req.end(body);
+  });
+
+  assert.equal(status, 200);
+  assert.equal(payload.id, 10);
+  assert.equal(payload.error.code, -32602);
+  assert.doesNotMatch(payload.error.message, /Cannot read properties/);
 });
 
 test("lists public resources only", () => {

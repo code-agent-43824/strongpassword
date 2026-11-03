@@ -140,7 +140,9 @@ export function handleJsonRpc(message) {
   switch (message.method) {
     case "initialize":
       return jsonRpcResult(message.id, {
-        protocolVersion: PROTOCOL_VERSION,
+        protocolVersion: SUPPORTED_PROTOCOL_VERSIONS.has(message.params?.protocolVersion)
+          ? message.params.protocolVersion
+          : PROTOCOL_VERSION,
         capabilities: {
           resources: {},
           prompts: {},
@@ -251,6 +253,10 @@ export function createServer() {
 }
 
 function readResource(id, params = {}) {
+  if (!params || typeof params !== "object" || Array.isArray(params) || typeof params.uri !== "string") {
+    return jsonRpcError(id, -32602, "Invalid resource parameters");
+  }
+
   const resource = resources.find((item) => item.uri === params.uri);
   if (!resource) {
     return jsonRpcError(id, -32602, "Unknown resource URI");
@@ -268,6 +274,10 @@ function readResource(id, params = {}) {
 }
 
 function getPrompt(id, params = {}) {
+  if (!params || typeof params !== "object" || Array.isArray(params) || typeof params.name !== "string") {
+    return jsonRpcError(id, -32602, "Invalid prompt parameters");
+  }
+
   const prompt = prompts.find((item) => item.name === params.name);
   if (!prompt) {
     return jsonRpcError(id, -32602, "Unknown prompt name");

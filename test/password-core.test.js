@@ -34,7 +34,7 @@ describe("password core", () => {
       upper: false,
       digits: false,
       symbols: false
-    }));
+    }), { code: "no_character_groups" });
   });
 
   it("generates requested length and selected groups", () => {
@@ -114,6 +114,18 @@ describe("password core", () => {
       profiles.map(({ symbols }) => symbols),
       [true, false, true, false, true, false, true, false]
     );
+  });
+
+  it("keeps fractional goal thresholds distinct across purpose profiles", () => {
+    const goal = "abcdefghijklmn";
+    const server = buildGoalPassword(goal, { targetBits: PRESETS.server.targetBits });
+    const recovery = buildGoalPassword(goal, { targetBits: PRESETS.recovery.targetBits });
+
+    assert.equal(server.targetBits, 65.5);
+    assert.equal(recovery.targetBits, 66);
+    assert.equal(server.password, "Abcdefghijklmn");
+    assert.notEqual(recovery.password, server.password);
+    assert.ok(recovery.suffixEntropy > 0);
   });
 
   it("rejects empty or unsupported goal text", () => {

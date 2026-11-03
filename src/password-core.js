@@ -60,11 +60,15 @@ export function characterGroups(options) {
     .filter(Boolean);
 
   if (cleaned.length === 0) {
-    throw new Error("At least one character group must be enabled.");
+    throw Object.assign(new Error("At least one character group must be enabled."), {
+      code: "no_character_groups"
+    });
   }
 
   if (normalized.length < cleaned.length) {
-    throw new Error("Password length is too short for the selected groups.");
+    throw Object.assign(new Error("Password length is too short for the selected groups."), {
+      code: "length_too_short"
+    });
   }
 
   return cleaned;
@@ -221,7 +225,9 @@ export function secureRandomInt(max) {
 
   const cryptoRef = globalThis.crypto;
   if (!cryptoRef?.getRandomValues) {
-    throw new Error("Secure browser random generator is unavailable.");
+    throw Object.assign(new Error("Secure browser random generator is unavailable."), {
+      code: "crypto_unavailable"
+    });
   }
 
   const range = 0x100000000;
@@ -263,7 +269,7 @@ function normalizeGoal(goal) {
 
 function normalizeTargetBits(targetBits) {
   const numeric = Number(targetBits);
-  return Number.isFinite(numeric) ? Math.max(32, Math.min(96, Math.round(numeric))) : 64;
+  return Number.isFinite(numeric) ? Math.max(32, Math.min(96, numeric)) : 64;
 }
 
 function randomCharacters(pool, length, random) {

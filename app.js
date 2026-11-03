@@ -37,6 +37,10 @@ const dictionary = {
     goalHint: "Оценка считается побуквенно и не учитывает словарный или целевой подбор. Текст остаётся только в браузере.",
     goalRequired: "Сначала введите цель.",
     goalUnsupported: "Используйте буквы русского или латинского алфавита и цифры.",
+    noCharacterGroups: "Выберите хотя бы один набор символов.",
+    cryptoUnavailable: "Браузер не поддерживает безопасную генерацию паролей.",
+    generationFailed: "Не удалось сгенерировать пароль. Попробуйте ещё раз.",
+    copyFailed: "Не удалось скопировать. Скопируйте пароль вручную.",
     disposable: "Одноразовый сервис",
     social: "Соцсети",
     government: "Госуслуги",
@@ -113,6 +117,10 @@ const dictionary = {
     goalHint: "The estimate counts characters and excludes dictionary or goal-aware guessing. The text stays only in your browser.",
     goalRequired: "Enter a goal first.",
     goalUnsupported: "Use Latin or Cyrillic letters and numbers.",
+    noCharacterGroups: "Select at least one character group.",
+    cryptoUnavailable: "This browser does not support secure password generation.",
+    generationFailed: "Could not generate a password. Please try again.",
+    copyFailed: "Could not copy the password. Please copy it manually.",
     disposable: "One-time service",
     social: "Social networks",
     government: "Government services",
@@ -241,13 +249,16 @@ function createPassword() {
       state.password = generatePassword(state.options);
     }
     state.error = "";
+    state.copied = false;
     state.visible = true;
     state.countdown = 45;
     restartTimer();
     render();
   } catch (error) {
     state.password = "";
-    state.error = error.code || "goal_required";
+    state.goalResult = null;
+    state.copied = false;
+    state.error = error.code || "generation_failed";
     clearInterval(state.timer);
     render();
   }
@@ -255,13 +266,20 @@ function createPassword() {
 
 async function copyPassword() {
   if (!state.password) return;
-  await navigator.clipboard.writeText(state.password);
-  state.copied = true;
-  render();
-  setTimeout(() => {
-    state.copied = false;
+  try {
+    await navigator.clipboard.writeText(state.password);
+    state.copied = true;
+    state.error = "";
     render();
-  }, 1200);
+    setTimeout(() => {
+      state.copied = false;
+      render();
+    }, 1200);
+  } catch {
+    state.copied = false;
+    state.error = "copy_failed";
+    render();
+  }
 }
 
 function toggleVisibility() {
@@ -278,14 +296,12 @@ function toggleVisibility() {
 
 function updateLength(event) {
   state.options = normalizeOptions({ ...state.options, length: Number(event.target.value) });
-  render();
   createPassword();
 }
 
 function updateOption(event) {
   const key = event.target.dataset.option;
   state.options = normalizeOptions({ ...state.options, [key]: event.target.checked });
-  render();
   createPassword();
 }
 
@@ -301,7 +317,6 @@ function applyPreset(event) {
 function setMode(event) {
   state.mode = event.target.value === "goal" ? "goal" : "random";
   state.error = "";
-  render();
   if (state.mode === "random" || state.goal.trim()) {
     createPassword();
   } else {
@@ -314,7 +329,11 @@ function setMode(event) {
 function updateGoal(event) {
   state.goal = event.target.value.slice(0, 80);
   state.goalResult = null;
+  state.password = "";
+  state.copied = false;
   state.error = "";
+  state.countdown = 0;
+  clearInterval(state.timer);
   render();
 }
 
@@ -380,11 +399,17 @@ function render() {
   elements.strength.textContent = state.password ? t.strengths[label] : "-";
   elements.crack.textContent = state.password ? formatCrackTime(crackYears, t) : "-";
   elements.countdown.textContent = state.visible && state.password ? t.visible + " " + state.countdown + " " + t.seconds : "";
-  elements.error.textContent = state.error === "goal_unsupported"
-    ? t.goalUnsupported
-    : state.error
-      ? t.goalRequired
-      : "";
+  const errorMessages = {
+    goal_required: t.goalRequired,
+    goal_unsupported: t.goalUnsupported,
+    no_character_groups: t.noCharacterGroups,
+    crypto_unavailable: t.cryptoUnavailable,
+    generation_failed: t.generationFailed,
+    copy_failed: t.copyFailed
+  };
+  elements.error.textContent = state.error
+    ? errorMessages[state.error] || t.generationFailed
+    : "";
   elements.goalFeedback.textContent = goalFeedback(t);
   elements.goalFeedback.dataset.warning = String(
     Boolean(state.goalResult?.additionalLetters)
@@ -392,7 +417,9 @@ function render() {
   renderPurposeChoices(t);
   renderProfile(t, entropy);
   elements.copy.textContent = state.copied ? t.copied : t.copy;
+  elements.copy.disabled = !state.password;
   elements.visibility.textContent = state.visible ? t.hide : t.show;
+  elements.visibility.disabled = !state.password;
 
   for (const option of elements.options) {
     option.checked = Boolean(state.options[option.dataset.option]);

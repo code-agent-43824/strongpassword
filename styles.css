@@ -47,6 +47,7 @@ a {
   margin: 0 auto;
   padding: 28px 0 18px;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: 1fr auto;
   gap: 18px;
 }
@@ -164,11 +165,11 @@ h1 {
 }
 
 .password-output[data-size="sm"] {
-  font-size: 0.94rem;
+  font-size: 1rem;
 }
 
 .password-output[data-size="xs"] {
-  font-size: 0.62rem;
+  font-size: 0.875rem;
 }
 
 .password-actions {
@@ -188,6 +189,11 @@ button {
 
 button:hover {
   border-color: var(--accent);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
 }
 
 .primary-button {
@@ -581,15 +587,15 @@ code {
   }
 
   .password-output[data-size="md"] {
-    font-size: 0.82rem;
+    font-size: 0.875rem;
   }
 
   .password-output[data-size="sm"] {
-    font-size: 0.64rem;
+    font-size: 0.875rem;
   }
 
   .password-output[data-size="xs"] {
-    font-size: 0.43rem;
+    font-size: 0.875rem;
   }
 
   .metrics,
